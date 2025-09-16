@@ -5,12 +5,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数
             Table.api.init({
                 extend: {
-                    index_url: 'bom/materialusage/index' + location.search,
-                    add_url: 'bom/materialusage/add',
-                    edit_url: 'bom/materialusage/edit',
-                    del_url: 'bom/materialusage/del',
-                    multi_url: 'bom/materialusage/multi',
-                    import_url: 'bom/materialusage/import',
+                    index_url: 'bom/material_usage/index' + location.search,
+                    add_url: 'bom/material_usage/add',
+                    edit_url: 'bom/material_usage/edit',
+                    del_url: 'bom/material_usage/del',
+                    multi_url: 'bom/material_usage/multi',
+                    import_url: 'bom/material_usage/import',
                     table: 'material_usages',
                 }
             });
@@ -92,7 +92,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                  title: '查看详情',
                                  classname: 'btn btn-xs btn-info btn-dialog',
                                  icon: 'fa fa-eye',
-                                 url: 'bom/materialusage/detail'
+                                 url: 'bom/material_usage/detail'
                              }
                          ]}
                     ]
@@ -104,7 +104,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             // 批量分配材料使用
             $(document).on("click", ".btn-batch-assign", function () {
-                Fast.api.open("bom/materialusage/batch_assign", "批量分配材料", {
+                Fast.api.open("bom/material_usage/batch_assign", "批量分配材料", {
                     area: ["90%", "90%"],
                     callback: function(data) {
                         table.bootstrapTable('refresh');
@@ -120,7 +120,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     Toastr.error("请先选择要预览成本的材料使用");
                     return;
                 }
-                Fast.api.open("bom/materialusage/cost_preview?ids=" + ids.join(','), "成本预览", {
+                Fast.api.open("bom/material_usage/cost_preview?ids=" + ids.join(','), "成本预览", {
                     area: ["80%", "70%"]
                 });
             });
@@ -196,7 +196,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 if (!materialId) return;
                 
                 Fast.api.ajax({
-                    url: "bom/rawmaterial/detail",
+                    url: "bom/raw_material/detail",
                     data: {id: materialId},
                     success: function(data) {
                         if (data.code === 1 && data.data) {

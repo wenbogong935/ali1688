@@ -5,12 +5,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数
             Table.api.init({
                 extend: {
-                    index_url: 'bom/rawmaterial/index' + location.search,
-                    add_url: 'bom/rawmaterial/add',
-                    edit_url: 'bom/rawmaterial/edit',
-                    del_url: 'bom/rawmaterial/del',
-                    multi_url: 'bom/rawmaterial/multi',
-                    import_url: 'bom/rawmaterial/import',
+                    index_url: 'bom/raw_material/index' + location.search,
+                    add_url: 'bom/raw_material/add',
+                    edit_url: 'bom/raw_material/edit',
+                    del_url: 'bom/raw_material/del',
+                    multi_url: 'bom/raw_material/multi',
+                    import_url: 'bom/raw_material/import',
                     table: 'raw_materials',
                 }
             });
@@ -67,7 +67,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             // 批量导入
             $(document).on("click", ".btn-import", function () {
-                Fast.api.open("bom/rawmaterial/import", "批量导入原材料", {
+                Fast.api.open("bom/raw_material/import", "批量导入原材料", {
                     area: ["90%", "90%"],
                     callback: function(data) {
                         table.bootstrapTable('refresh');
@@ -77,7 +77,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             // 导出模板
             $(document).on("click", ".btn-export-template", function () {
-                Fast.api.open("bom/rawmaterial/export_template", "导出模板", {
+                Fast.api.open("bom/raw_material/export_template", "导出模板", {
                     area: ["50%", "50%"]
                 });
             });

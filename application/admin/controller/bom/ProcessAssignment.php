@@ -110,7 +110,7 @@ class ProcessAssignment extends Backend
 
             return json($result);
         }
-        return $this->view->fetch();
+        return $this->view->fetch('bom/process_assignment/index');
     }
 
     /**
@@ -155,7 +155,7 @@ class ProcessAssignment extends Backend
             }
             $this->error(__('Parameter %s can not be empty', ''));
         }
-        return $this->view->fetch();
+        return $this->view->fetch('bom/process_assignment/add');
     }
 
     /**
@@ -205,7 +205,7 @@ class ProcessAssignment extends Backend
             $this->error(__('Parameter %s can not be empty', ''));
         }
         $this->view->assign("row", $row);
-        return $this->view->fetch();
+        return $this->view->fetch('bom/process_assignment/edit');
     }
 
     /**
@@ -332,6 +332,6 @@ class ProcessAssignment extends Backend
         // 预设复制的工艺分配别名
         $row->alias = $row->alias . '_副本';
         $this->view->assign("row", $row);
-        return $this->view->fetch('add');
+        return $this->view->fetch('bom/process_assignment/add');
     }
 }

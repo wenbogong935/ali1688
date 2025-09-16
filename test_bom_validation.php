@@ -67,28 +67,28 @@ class BomSystemValidator
             'application/admin/view/bom/component/index.html',
             'application/admin/view/bom/component/add.html',
             'application/admin/view/bom/component/edit.html',
-            'application/admin/view/bom/rawmaterial/index.html',
-            'application/admin/view/bom/rawmaterial/add.html',
-            'application/admin/view/bom/rawmaterial/edit.html',
+            'application/admin/view/bom/raw_material/index.html',
+            'application/admin/view/bom/raw_material/add.html',
+            'application/admin/view/bom/raw_material/edit.html',
             'application/admin/view/bom/process/index.html',
             'application/admin/view/bom/process/add.html',
             'application/admin/view/bom/process/edit.html',
-            'application/admin/view/bom/materialusage/index.html',
-            'application/admin/view/bom/materialusage/add.html',
-            'application/admin/view/bom/materialusage/edit.html',
-            'application/admin/view/bom/processassignment/index.html',
-            'application/admin/view/bom/processassignment/add.html',
-            'application/admin/view/bom/processassignment/edit.html'
+            'application/admin/view/bom/material_usage/index.html',
+            'application/admin/view/bom/material_usage/add.html',
+            'application/admin/view/bom/material_usage/edit.html',
+            'application/admin/view/bom/process_assignment/index.html',
+            'application/admin/view/bom/process_assignment/add.html',
+            'application/admin/view/bom/process_assignment/edit.html'
         ];
 
         // JavaScript文件
         $javascript = [
             'public/assets/js/backend/bom/product.js',
             'public/assets/js/backend/bom/component.js',
-            'public/assets/js/backend/bom/rawmaterial.js',
+            'public/assets/js/backend/bom/raw_material.js',
             'public/assets/js/backend/bom/process.js',
-            'public/assets/js/backend/bom/materialusage.js',
-            'public/assets/js/backend/bom/processassignment.js'
+            'public/assets/js/backend/bom/material_usage.js',
+            'public/assets/js/backend/bom/process_assignment.js'
         ];
 
         // CSS文件
@@ -183,10 +183,10 @@ class BomSystemValidator
         $jsFiles = [
             'public/assets/js/backend/bom/product.js',
             'public/assets/js/backend/bom/component.js',
-            'public/assets/js/backend/bom/rawmaterial.js',
+            'public/assets/js/backend/bom/raw_material.js',
             'public/assets/js/backend/bom/process.js',
-            'public/assets/js/backend/bom/materialusage.js',
-            'public/assets/js/backend/bom/processassignment.js'
+            'public/assets/js/backend/bom/material_usage.js',
+            'public/assets/js/backend/bom/process_assignment.js'
         ];
 
         foreach ($jsFiles as $file) {
@@ -211,10 +211,10 @@ class BomSystemValidator
         $viewDirs = [
             'application/admin/view/bom/product/',
             'application/admin/view/bom/component/',
-            'application/admin/view/bom/rawmaterial/',
+            'application/admin/view/bom/raw_material/',
             'application/admin/view/bom/process/',
-            'application/admin/view/bom/materialusage/',
-            'application/admin/view/bom/processassignment/'
+            'application/admin/view/bom/material_usage/',
+            'application/admin/view/bom/process_assignment/'
         ];
 
         foreach ($viewDirs as $dir) {

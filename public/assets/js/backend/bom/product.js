@@ -264,7 +264,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 
                 var urlMap = {
                     'component': 'bom/component/detail',
-                    'material': 'bom/rawmaterial/detail', 
+                    'material': 'bom/raw_material/detail',
                     'process': 'bom/process/detail'
                 };
                 

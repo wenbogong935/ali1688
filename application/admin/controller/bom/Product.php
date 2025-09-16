@@ -65,7 +65,7 @@ class Product extends Backend
 
             return json($result);
         }
-        return $this->view->fetch();
+        return $this->view->fetch('bom/product/index');
     }
 
     /**
@@ -110,7 +110,7 @@ class Product extends Backend
             }
             $this->error(__('Parameter %s can not be empty', ''));
         }
-        return $this->view->fetch();
+        return $this->view->fetch('bom/product/add');
     }
 
     /**
@@ -160,7 +160,7 @@ class Product extends Backend
             $this->error(__('Parameter %s can not be empty', ''));
         }
         $this->view->assign("row", $row);
-        return $this->view->fetch();
+        return $this->view->fetch('bom/product/edit');
     }
 
     /**
@@ -184,7 +184,7 @@ class Product extends Backend
         $productWithBom = $row->getFullBomTree();
         
         $this->view->assign("row", $productWithBom);
-        return $this->view->fetch();
+        return $this->view->fetch('bom/product/bom');
     }
 
     /**
@@ -259,7 +259,7 @@ class Product extends Backend
                 $this->view->assign('product', $annotatedProduct);
                 $this->view->assign('costSummary', $costSummary);
                 $this->view->assign('configParams', $configParams);
-                return $this->view->fetch();
+                return $this->view->fetch('bom/product/calculate');
             }
 
         } catch (\Exception $e) {

@@ -78,7 +78,7 @@ class Component extends Backend
 
             return json($result);
         }
-        return $this->view->fetch();
+        return $this->view->fetch('bom/component/index');
     }
 
     /**
@@ -123,7 +123,7 @@ class Component extends Backend
             }
             $this->error(__('Parameter %s can not be empty', ''));
         }
-        return $this->view->fetch();
+        return $this->view->fetch('bom/component/add');
     }
 
     /**
@@ -173,7 +173,7 @@ class Component extends Backend
             $this->error(__('Parameter %s can not be empty', ''));
         }
         $this->view->assign("row", $row);
-        return $this->view->fetch();
+        return $this->view->fetch('bom/component/edit');
     }
 
     /**

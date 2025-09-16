@@ -64,7 +64,7 @@ class RawMaterial extends Backend
 
             return json($result);
         }
-        return $this->view->fetch();
+        return $this->view->fetch('bom/raw_material/index');
     }
 
     /**
@@ -109,7 +109,7 @@ class RawMaterial extends Backend
             }
             $this->error(__('Parameter %s can not be empty', ''));
         }
-        return $this->view->fetch();
+        return $this->view->fetch('bom/raw_material/add');
     }
 
     /**
@@ -159,7 +159,7 @@ class RawMaterial extends Backend
             $this->error(__('Parameter %s can not be empty', ''));
         }
         $this->view->assign("row", $row);
-        return $this->view->fetch();
+        return $this->view->fetch('bom/raw_material/edit');
     }
 
     /**
@@ -181,7 +181,7 @@ class RawMaterial extends Backend
                 $this->error('导入失败: ' . $e->getMessage());
             }
         }
-        return $this->view->fetch();
+        return $this->view->fetch('bom/raw_material/import');
     }
 
     /**

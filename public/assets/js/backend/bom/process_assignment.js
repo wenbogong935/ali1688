@@ -5,12 +5,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数
             Table.api.init({
                 extend: {
-                    index_url: 'bom/processassignment/index' + location.search,
-                    add_url: 'bom/processassignment/add',
-                    edit_url: 'bom/processassignment/edit',
-                    del_url: 'bom/processassignment/del',
-                    multi_url: 'bom/processassignment/multi',
-                    import_url: 'bom/processassignment/import',
+                    index_url: 'bom/process_assignment/index' + location.search,
+                    add_url: 'bom/process_assignment/add',
+                    edit_url: 'bom/process_assignment/edit',
+                    del_url: 'bom/process_assignment/del',
+                    multi_url: 'bom/process_assignment/multi',
+                    import_url: 'bom/process_assignment/import',
                     table: 'process_assignments',
                 }
             });
@@ -70,7 +70,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             // 批量分配
             $(document).on("click", ".btn-batch-assign", function () {
-                Fast.api.open("bom/processassignment/batch_assign", "批量分配工艺", {
+                Fast.api.open("bom/process_assignment/batch_assign", "批量分配工艺", {
                     area: ["90%", "90%"],
                     callback: function(data) {
                         table.bootstrapTable('refresh');
@@ -80,7 +80,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             // 工艺流程
             $(document).on("click", ".btn-workflow", function () {
-                Fast.api.open("bom/processassignment/workflow", "工艺流程图", {
+                Fast.api.open("bom/process_assignment/workflow", "工艺流程图", {
                     area: ["95%", "90%"]
                 });
             });

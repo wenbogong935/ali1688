@@ -367,7 +367,7 @@
                 return;
             }
             
-            Fast.api.open('bom/materialusage/add?component_id=' + selectedNode.data.id, '添加材料', {
+            Fast.api.open('bom/material_usage/add?component_id=' + selectedNode.data.id, '添加材料', {
                 callback: function() {
                     loadBomTree();
                 }
@@ -381,7 +381,7 @@
                 return;
             }
             
-            var url = 'bom/processassignment/add?';
+            var url = 'bom/process_assignment/add?';
             if (selectedNode.type === 'component') {
                 url += 'component_id=' + selectedNode.data.id;
             } else if (selectedNode.type === 'material') {
@@ -408,10 +408,10 @@
                     url = 'bom/component/edit/ids/' + selectedNode.data.id;
                     break;
                 case 'material':
-                    url = 'bom/materialusage/edit/ids/' + selectedNode.data.id;
+                    url = 'bom/material_usage/edit/ids/' + selectedNode.data.id;
                     break;
                 case 'process':
-                    url = 'bom/processassignment/edit/ids/' + selectedNode.data.id;
+                    url = 'bom/process_assignment/edit/ids/' + selectedNode.data.id;
                     break;
                 default:
                     Toastr.error('此节点不支持编辑');
@@ -444,10 +444,10 @@
                         url = 'bom/component/del/ids/' + selectedNode.data.id;
                         break;
                     case 'material':
-                        url = 'bom/materialusage/del/ids/' + selectedNode.data.id;
+                        url = 'bom/material_usage/del/ids/' + selectedNode.data.id;
                         break;
                     case 'process':
-                        url = 'bom/processassignment/del/ids/' + selectedNode.data.id;
+                        url = 'bom/process_assignment/del/ids/' + selectedNode.data.id;
                         break;
                 }
                 
