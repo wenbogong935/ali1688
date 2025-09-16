@@ -1,0 +1,28 @@
+<div class="panel panel-default panel-intro">
+    <div class="panel-heading">
+        <div class="btn-group" id="toolbar">
+            <a class="btn btn-primary btn-add {:$auth->check('bom/process/add')?'':'hide'}" title="{:__('Add')}" href="javascript:;"><i class="fa fa-plus"></i> {:__('Add')}</a>
+            <a class="btn btn-primary btn-edit btn-disabled disabled {:$auth->check('bom/process/edit')?'':'hide'}" title="{:__('Edit')}" href="javascript:;"><i class="fa fa-pencil"></i> {:__('Edit')}</a>
+            <a class="btn btn-danger btn-del btn-disabled disabled {:$auth->check('bom/process/del')?'':'hide'}" title="{:__('Delete')}" href="javascript:;"><i class="fa fa-trash"></i> {:__('Delete')}</a>
+            <a class="btn btn-warning btn-copy btn-disabled disabled {:$auth->check('bom/process/copy')?'':'hide'}" title="复制工艺" href="javascript:;"><i class="fa fa-copy"></i> 复制工艺</a>
+            <div class="dropdown btn-group {:$auth->check('bom/process/multi')?'':'hide'}">
+                <a class="btn btn-primary btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> {:__('More')}</a>
+                <ul class="dropdown-menu text-left" role="menu">
+                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=normal"><i class="fa fa-eye"></i> {:__('Set to normal')}</a></li>
+                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=hidden"><i class="fa fa-eye-slash"></i> {:__('Set to hidden')}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <table id="table" class="table table-striped table-bordered table-hover table-nowrap" 
+                       data-operate-edit="{:$auth->check('bom/process/edit')}" 
+                       data-operate-del="{:$auth->check('bom/process/del')}" 
+                       width="100%">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

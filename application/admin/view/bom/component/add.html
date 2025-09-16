@@ -1,0 +1,66 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">所属产品:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-product_id" data-rule="required" class="form-control selectpicker" name="row[product_id]">
+                <option value="">请选择产品</option>
+                {foreach name="productList" item="vo"}
+                <option value="{$key}">{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">父部件:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-parent_component_id" class="form-control selectpicker" name="row[parent_component_id]">
+                <option value="">无（顶层部件）</option>
+                {foreach name="componentList" item="vo"}
+                <option value="{$key}">{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">部件名称:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-name" data-rule="required" class="form-control" name="row[name]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">相对父项数量:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-quantity_per_parent" class="form-control" step="0.0001" name="row[quantity_per_parent]" type="number" value="1.0000">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">长度公式:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-length_formula" class="form-control" name="row[length_formula]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">宽度公式:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-width_formula" class="form-control" name="row[width_formula]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">高度公式:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-height_formula" class="form-control" name="row[height_formula]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">排序:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-sequence" class="form-control" name="row[sequence]" type="number" value="0">
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-primary btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>

@@ -10,6 +10,7 @@ use think\Db;
 use think\exception\DbException;
 use think\exception\PDOException;
 use think\exception\ValidateException;
+use Exception;
 
 /**
  * BOM产品管理

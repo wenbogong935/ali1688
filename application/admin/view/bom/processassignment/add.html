@@ -1,0 +1,88 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">部件:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-component_id" class="form-control selectpicker" name="row[component_id]">
+                <option value="">请选择部件</option>
+                {foreach name="componentList" item="vo"}
+                <option value="{$key}">{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">材料使用:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-material_usage_id" class="form-control selectpicker" name="row[material_usage_id]">
+                <option value="">请选择材料使用（可选）</option>
+                {foreach name="materialUsageList" item="vo"}
+                <option value="{$key}">{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">工艺:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-process_id" data-rule="required" class="form-control selectpicker" name="row[process_id]">
+                <option value="">请选择工艺</option>
+                {foreach name="processList" item="vo"}
+                <option value="{$key}">{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">父工艺分配:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-parent_assignment_id" class="form-control selectpicker" name="row[parent_assignment_id]">
+                <option value="">无（独立工艺）</option>
+                {foreach name="assignmentList" item="vo"}
+                <option value="{$key}">{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">别名:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-alias" class="form-control" name="row[alias]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">排序:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-sequence" class="form-control" name="row[sequence]" type="number" value="0">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">成本覆盖:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-cost_override" class="form-control" step="0.000001" name="row[cost_override]" type="number" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">受拼版影响:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="radio">
+                <label for="row[is_affected_by_imposition]-yes"><input id="row[is_affected_by_imposition]-yes" name="row[is_affected_by_imposition]" type="radio" value="1"> 是</label> 
+                <label for="row[is_affected_by_imposition]-no"><input id="row[is_affected_by_imposition]-no" name="row[is_affected_by_imposition]" type="radio" value="0" checked> 否</label> 
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">转换性工艺:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="radio">
+                <label for="row[is_transformative]-yes"><input id="row[is_transformative]-yes" name="row[is_transformative]" type="radio" value="1"> 是</label> 
+                <label for="row[is_transformative]-no"><input id="row[is_transformative]-no" name="row[is_transformative]" type="radio" value="0" checked> 否</label> 
+            </div>
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-primary btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>

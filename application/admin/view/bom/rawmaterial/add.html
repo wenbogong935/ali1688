@@ -1,0 +1,76 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">原材料名称:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-name" data-rule="required" class="form-control" name="row[name]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">材料类型:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-type" class="form-control selectpicker" name="row[type]">
+                {foreach name="typeList" item="vo"}
+                <option value="{$key}">{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">单位成本:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-unit_cost" data-rule="required" class="form-control" step="0.000001" name="row[unit_cost]" type="number" value="0.000000">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">计量单位:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-unit_of_measure" data-rule="required" class="form-control selectpicker" name="row[unit_of_measure]">
+                {foreach name="unitOfMeasureList" item="vo"}
+                <option value="{$key}">{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">标准长度(cm):</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-std_length_cm" class="form-control" step="0.01" name="row[std_length_cm]" type="number" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">标准宽度(cm):</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-std_width_cm" class="form-control" step="0.01" name="row[std_width_cm]" type="number" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">标准克重(g/m²):</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-std_grammage_gsm" class="form-control" step="0.01" name="row[std_grammage_gsm]" type="number" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">厚度(mm):</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-thickness_mm" class="form-control" step="0.01" name="row[thickness_mm]" type="number" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">密度(kg/m³):</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-density_kgm3" class="form-control" step="0.01" name="row[density_kgm3]" type="number" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">备注:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-notes" class="form-control" rows="5" name="row[notes]" cols="50"></textarea>
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-primary btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>
