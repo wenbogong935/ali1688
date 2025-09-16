@@ -25,28 +25,38 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
+                        {field: 'id', title: __('Id'), width: 60},
                         {field: 'name', title: __('Name'), operate: 'LIKE', 
                          formatter: function(value, row, index) {
-                             var status = row.status === 'active' ? 
-                                '<span class="label label-success">启用</span>' : 
-                                '<span class="label label-default">禁用</span>';
-                             return '<strong>' + value + '</strong> ' + status;
+                             return '<div class="product-info">' +
+                                    '<strong class="product-name">' + value + '</strong>' +
+                                    '<div class="product-status">' + Controller.api.formatStatus(row.status) + '</div>' +
+                                    '</div>';
                          }},
-                        {field: 'description', title: __('Description'), operate: 'LIKE'},
+                        {field: 'description', title: __('Description'), operate: 'LIKE', 
+                         formatter: function(value, row, index) {
+                             return value ? '<span class="text-muted" title="' + value + '">' + 
+                                    (value.length > 50 ? value.substring(0, 50) + '...' : value) + '</span>' : 
+                                    '<span class="text-muted">无描述</span>';
+                         }},
                         {field: 'image', title: __('Image'), operate: false, 
-                         events: Table.api.events.image, formatter: Table.api.formatter.image},
-                        {field: 'length_formula', title: '长度公式', operate: 'LIKE', 
+                         events: Table.api.events.image, 
+                         formatter: function(value, row, index) {
+                             return value ? 
+                                 '<a href="' + value + '" target="_blank" class="btn btn-xs btn-success"><i class="fa fa-image"></i></a>' :
+                                 '<span class="text-muted">无图片</span>';
+                         }},
+                        {field: 'length_formula', title: '长度(L)', operate: 'LIKE', width: 100,
                          formatter: Controller.api.formatFormula},
-                        {field: 'width_formula', title: '宽度公式', operate: 'LIKE', 
+                        {field: 'width_formula', title: '宽度(W)', operate: 'LIKE', width: 100,
                          formatter: Controller.api.formatFormula},
-                        {field: 'height_formula', title: '高度公式', operate: 'LIKE', 
+                        {field: 'height_formula', title: '高度(H)', operate: 'LIKE', width: 100,
                          formatter: Controller.api.formatFormula},
                         {field: 'createtime', title: __('Createtime'), operate:'RANGE', 
-                         addclass:'datetimerange', autocomplete:false, 
+                         addclass:'datetimerange', autocomplete:false, width: 120,
                          formatter: Table.api.formatter.datetime},
                         {field: 'operate', title: __('Operate'), table: table, 
-                         events: Table.api.events.operate, 
+                         events: Table.api.events.operate, width: 160,
                          buttons: [
                              {
                                  name: 'bom',

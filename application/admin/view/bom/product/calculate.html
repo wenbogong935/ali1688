@@ -54,6 +54,66 @@
         .calc-button {
             margin-top: 20px;
         }
+        /* Enhanced styling for better UI */
+        .cost-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+        .section-title {
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #007bff;
+            color: #495057;
+            font-weight: 600;
+        }
+        .param-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: end;
+        }
+        .form-group {
+            margin-right: 20px;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #495057;
+        }
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            z-index: 1000;
+            display: none;
+        }
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .btn-calculate {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn-calculate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+        }
     </style>
 </head>
 <body>
@@ -68,32 +128,46 @@
                 </h3>
             </div>
             <div class="panel-body">
-                <!-- 计算参数设置 -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <h4>计算参数设置</h4>
-                        <form id="calc-params-form" class="form-inline">
-                            <div class="form-group">
-                                <label>包装费用(元):</label>
-                                <input type="number" class="form-control param-input" name="packaging_cost" value="{$configParams.packaging_cost|default=0}" step="0.01">
-                            </div>
-                            <div class="form-group">
-                                <label>人工费用(元):</label>
-                                <input type="number" class="form-control param-input" name="labor_cost" value="{$configParams.labor_cost|default=0}" step="0.01">
-                            </div>
-                            <div class="form-group">
-                                <label>总损耗率(%):</label>
-                                <input type="number" class="form-control param-input" name="waste_rate" value="{$configParams.waste_rate|default=0}" step="0.01" max="100">
-                            </div>
-                            <div class="form-group">
-                                <label>小批量摊销费(元):</label>
-                                <input type="number" class="form-control param-input" name="small_batch_cost" value="{$configParams.small_batch_cost|default=0}" step="0.01">
-                            </div>
-                            <button type="button" class="btn btn-primary calc-button" onclick="calculateCost()">
-                                <i class="fa fa-calculator"></i> 重新计算
-                            </button>
-                        </form>
+                <!-- Loading overlay -->
+                <div class="loading-overlay" id="loading-overlay">
+                    <div class="loading-spinner">
+                        <i class="fa fa-spinner fa-spin fa-3x text-primary"></i>
+                        <p class="text-center mt-2">正在计算成本...</p>
                     </div>
+                </div>
+                
+                <!-- 计算参数设置 -->
+                <div class="cost-section">
+                    <h4 class="section-title"><i class="fa fa-cogs"></i> 计算参数设置</h4>
+                    <form id="calc-params-form">
+                        <div class="param-group">
+                            <div class="form-group">
+                                <label><i class="fa fa-cube"></i> 包装费用(元):</label>
+                                <input type="number" class="form-control param-input" name="packaging_cost" 
+                                       value="{$configParams.packaging_cost|default=0}" step="0.01" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa fa-user"></i> 人工费用(元):</label>
+                                <input type="number" class="form-control param-input" name="labor_cost" 
+                                       value="{$configParams.labor_cost|default=0}" step="0.01" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa fa-percent"></i> 总损耗率(%):</label>
+                                <input type="number" class="form-control param-input" name="waste_rate" 
+                                       value="{$configParams.waste_rate|default=0}" step="0.1" min="0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa fa-industry"></i> 小批量费用(元):</label>
+                                <input type="number" class="form-control param-input" name="small_batch_cost" 
+                                       value="{$configParams.small_batch_cost|default=0}" step="0.01" min="0">
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-calculate" onclick="calculateCost()">
+                                    <i class="fa fa-calculator"></i> 重新计算
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
 
                 <hr>
@@ -203,27 +277,93 @@
     <script src="{:config('site.cdnurl')}/assets/js/fastadmin.min.js"></script>
     
     <script>
-        // 重新计算成本
+        // 重新计算成本 - 增强版本
         function calculateCost() {
             var formData = $('#calc-params-form').serialize();
             var productId = {$product.id|default=0};
+            
+            // 显示加载状态
+            showLoading(true);
+            
+            // 验证输入参数
+            if (!validateInputs()) {
+                showLoading(false);
+                return;
+            }
             
             $.ajax({
                 url: 'bom/product/calculate/ids/' + productId,
                 type: 'GET',
                 data: formData,
                 dataType: 'json',
+                timeout: 30000, // 30秒超时
                 success: function(ret) {
+                    showLoading(false);
                     if (ret.code === 1) {
-                        Toastr.success(ret.msg);
+                        Toastr.success('成本计算完成！');
                         // 重新加载页面或更新数据
-                        window.location.reload();
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
                     } else {
-                        Toastr.error(ret.msg);
+                        Toastr.error(ret.msg || '计算失败');
                     }
                 },
-                error: function() {
-                    Toastr.error('计算失败，请重试');
+                error: function(xhr, status, error) {
+                    showLoading(false);
+                    if (status === 'timeout') {
+                        Toastr.error('计算超时，请检查BOM结构是否过于复杂');
+                    } else {
+                        Toastr.error('计算失败：' + error);
+                    }
+                }
+            });
+        }
+
+        // 显示/隐藏加载状态
+        function showLoading(show) {
+            var $overlay = $('#loading-overlay');
+            if (show) {
+                $overlay.fadeIn(300);
+                $('button').prop('disabled', true);
+            } else {
+                $overlay.fadeOut(300);
+                $('button').prop('disabled', false);
+            }
+        }
+
+        // 验证输入参数
+        function validateInputs() {
+            var isValid = true;
+            var errorMessages = [];
+
+            // 验证包装费用
+            var packagingCost = parseFloat($('input[name="packaging_cost"]').val());
+            if (isNaN(packagingCost) || packagingCost < 0) {
+                errorMessages.push('包装费用必须是非负数');
+                isValid = false;
+            }
+
+            // 验证人工费用
+            var laborCost = parseFloat($('input[name="labor_cost"]').val());
+            if (isNaN(laborCost) || laborCost < 0) {
+                errorMessages.push('人工费用必须是非负数');
+                isValid = false;
+            }
+
+            // 验证损耗率
+            var wasteRate = parseFloat($('input[name="waste_rate"]').val());
+            if (isNaN(wasteRate) || wasteRate < 0 || wasteRate > 100) {
+                errorMessages.push('损耗率必须在0-100之间');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                Toastr.error('参数验证失败：<br>' + errorMessages.join('<br>'));
+            }
+
+            return isValid;
+        }
                 }
             });
         }

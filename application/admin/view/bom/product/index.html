@@ -7,7 +7,7 @@
             <a class="btn btn-success btn-bom btn-disabled disabled {:$auth->check('bom/product/bom')?'':'hide'}" title="BOM管理" href="javascript:;"><i class="fa fa-sitemap"></i> BOM管理</a>
             <a class="btn btn-info btn-calculate btn-disabled disabled {:$auth->check('bom/product/calculate')?'':'hide'}" title="成本计算" href="javascript:;"><i class="fa fa-calculator"></i> 成本计算</a>
             <div class="dropdown btn-group {:$auth->check('bom/product/multi')?'':'hide'}">
-                <a class="btn btn-primary btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> {:__('More')}</a>
+                <a class="btn btn-default btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> {:__('More')}</a>
                 <ul class="dropdown-menu text-left" role="menu">
                     <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=normal"><i class="fa fa-eye"></i> {:__('Set to normal')}</a></li>
                     <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=hidden"><i class="fa fa-eye-slash"></i> {:__('Set to hidden')}</a></li>
@@ -39,5 +39,13 @@
     <span class="text-muted">{{# d.FAT_FIELD_NAME }}</span>
 {{# } else { }}
     <span class="text-danger">未设置</span>
+{{# } }}
+</script>
+
+<script type="text/html" id="statustpl">
+{{# if(d.status === 'normal') { }}
+    <span class="label label-success">启用</span>
+{{# } else { }}
+    <span class="label label-default">禁用</span>
 {{# } }}
 </script>

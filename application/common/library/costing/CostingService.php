@@ -41,19 +41,19 @@ class CostingService
             }
         }
 
-        // 计算BOM总成本
-        $costSummary['total_bom_cost'] = $costSummary['material_cost'] + $costSummary['process_cost'];
+        // 计算BOM总成本（优化精度）
+        $costSummary['total_bom_cost'] = round($costSummary['material_cost'] + $costSummary['process_cost'], 4);
 
-        // 应用损耗率
-        $wasteAmount = $costSummary['total_bom_cost'] * ($costSummary['waste_rate'] / 100);
+        // 应用损耗率（优化计算）
+        $wasteAmount = round($costSummary['total_bom_cost'] * ($costSummary['waste_rate'] / 100), 4);
         $costSummary['waste_amount'] = $wasteAmount;
 
-        // 计算最终总成本
-        $costSummary['total_cost'] = $costSummary['total_bom_cost'] + 
+        // 计算最终总成本（提高精度）
+        $costSummary['total_cost'] = round($costSummary['total_bom_cost'] + 
                                    $wasteAmount +
                                    $costSummary['packaging_cost'] + 
                                    $costSummary['labor_cost'] + 
-                                   $costSummary['small_batch_cost'];
+                                   $costSummary['small_batch_cost'], 4);
 
         return $costSummary;
     }
@@ -128,31 +128,41 @@ class CostingService
         $unitCost = $materialUsage->rawMaterial->unit_cost ?? 0;
         $unitOfMeasure = $materialUsage->rawMaterial->unit_of_measure ?? '';
 
-        // 根据计量单位计算使用量和成本
-        switch (strtolower($unitOfMeasure)) {
-            case '每公斤':
-            case 'per_kg':
-                $materialCost['usage_amount'] = $materialUsage->resolved_weight ?? 0;
-                break;
-            case '每平方米':
-            case 'per_sqm':
-                $materialCost['usage_amount'] = $materialUsage->resolved_area ?? 0;
-                break;
-            case '每立方米':
-            case 'per_cbm':
-                $materialCost['usage_amount'] = $materialUsage->resolved_volume ?? 0;
-                break;
-            case '每件':
-            case 'per_piece':
-                $materialCost['usage_amount'] = 1;
-                break;
-            default:
-                $materialCost['usage_amount'] = $materialUsage->resolved_area ?? 0;
-        }
+        // 根据计量单位计算使用量和成本 - 优化计算逻辑
+        try {
+            switch (strtolower($unitOfMeasure)) {
+                case '每公斤':
+                case 'per_kg':
+                    $materialCost['usage_amount'] = $materialUsage->resolved_weight ?? 0;
+                    break;
+                case '每平方米':
+                case 'per_sqm':
+                    $materialCost['usage_amount'] = $materialUsage->resolved_area ?? 0;
+                    break;
+                case '每立方米':
+                case 'per_cbm':
+                    $materialCost['usage_amount'] = $materialUsage->resolved_volume ?? 0;
+                    break;
+                case '每件':
+                case 'per_piece':
+                    $materialCost['usage_amount'] = 1;
+                    break;
+                default:
+                    $materialCost['usage_amount'] = $materialUsage->resolved_area ?? 0;
+            }
 
-        // 计算总成本，考虑拼版数
-        $materialCost['total_cost'] = ($materialCost['usage_amount'] * $unitCost) / 
-                                    max(1, $materialCost['imposition_quantity']);
+            // 计算总成本，考虑拼版数，提高精度
+            $materialCost['total_cost'] = round(
+                ($materialCost['usage_amount'] * $unitCost) / max(1, $materialCost['imposition_quantity']), 
+                4
+            );
+            
+        } catch (Exception $e) {
+            // 计算错误时记录并返回零成本
+            error_log("Material cost calculation error: " . $e->getMessage());
+            $materialCost['total_cost'] = 0;
+            $materialCost['error'] = $e->getMessage();
+        }
 
         return $materialCost;
     }

@@ -104,7 +104,7 @@ class SpecificationService
             ($materialUsage->thickness_override_mm ?? $materialUsage->rawMaterial->thickness_mm ?? 0) / 1000000; // 转换为立方米
 
         // 计算重量（基于克重或密度）
-        if ($materialUsage->grammage_override || (isset($materialUsage->rawMaterial) && $materialUsage->rawMaterial->std_grammage_gsm)) {
+        if ((isset($materialUsage->grammage_override) && $materialUsage->grammage_override) || (isset($materialUsage->rawMaterial) && $materialUsage->rawMaterial->std_grammage_gsm)) {
             $grammage = $materialUsage->grammage_override ?? $materialUsage->rawMaterial->std_grammage_gsm;
             $materialUsage->resolved_weight = $materialUsage->resolved_area * $grammage / 1000; // 转换为公斤
         } elseif (isset($materialUsage->rawMaterial) && $materialUsage->rawMaterial->density_kgm3) {
