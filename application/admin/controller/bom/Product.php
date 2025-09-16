@@ -490,4 +490,153 @@ class Product extends Backend
         // 比如导出Excel、PDF等格式
         $this->success('导出功能开发中...');
     }
+
+    /**
+     * 产品预览
+     */
+    public function preview($ids = null)
+    {
+        if (!$this->request->isAjax()) {
+            $this->error('非法请求');
+        }
+
+        $row = $this->model->get($ids);
+        if (!$row) {
+            $this->error('产品不存在');
+        }
+
+        // 获取产品统计信息
+        $stats = [
+            'components_count' => 0,
+            'materials_count' => 0,
+            'processes_count' => 0,
+            'bom_complete' => false
+        ];
+
+        try {
+            // 统计BOM结构
+            $components = \app\admin\model\Component::where('product_id', $ids)->count();
+            $materials = \app\admin\model\MaterialUsage::alias('mu')
+                ->join('components c', 'mu.component_id = c.id')
+                ->where('c.product_id', $ids)
+                ->count();
+            $processes = \app\admin\model\ProcessAssignment::alias('pa')
+                ->join('components c', 'pa.component_id = c.id')
+                ->where('c.product_id', $ids)
+                ->count();
+
+            $stats['components_count'] = $components;
+            $stats['materials_count'] = $materials;
+            $stats['processes_count'] = $processes;
+            $stats['bom_complete'] = $components > 0 && $materials > 0;
+        } catch (\Exception $e) {
+            // 忽略统计错误
+        }
+
+        // 生成预览HTML
+        $previewHtml = $this->generatePreviewHtml($row, $stats);
+
+        $this->success('获取成功', '', [
+            'html' => $previewHtml,
+            'product' => $row,
+            'stats' => $stats
+        ]);
+    }
+
+    /**
+     * 生成产品预览HTML
+     */
+    private function generatePreviewHtml($product, $stats)
+    {
+        $html = '<div class="product-preview">';
+        
+        // 产品基本信息
+        $html .= '<div class="row">';
+        $html .= '<div class="col-md-4">';
+        if ($product->image) {
+            $html .= '<img src="' . $product->image . '" class="img-responsive" style="max-height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">';
+        } else {
+            $html .= '<div style="height: 200px; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center;">';
+            $html .= '<i class="fa fa-image fa-3x text-muted"></i>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        
+        $html .= '<div class="col-md-8">';
+        $html .= '<h4 style="color: #2c3e50; margin-bottom: 15px;">' . $product->name . '</h4>';
+        $html .= '<p class="text-muted">' . ($product->description ?: '暂无描述') . '</p>';
+        
+        // 尺寸公式
+        $html .= '<div class="row" style="margin-top: 20px;">';
+        $html .= '<div class="col-sm-4"><strong>长度公式:</strong><br><code>' . ($product->length_formula ?: '未设置') . '</code></div>';
+        $html .= '<div class="col-sm-4"><strong>宽度公式:</strong><br><code>' . ($product->width_formula ?: '未设置') . '</code></div>';
+        $html .= '<div class="col-sm-4"><strong>高度公式:</strong><br><code>' . ($product->height_formula ?: '未设置') . '</code></div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        
+        // 统计信息
+        $html .= '<hr>';
+        $html .= '<div class="row text-center">';
+        $html .= '<div class="col-sm-3">';
+        $html .= '<div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">';
+        $html .= '<div style="font-size: 24px; font-weight: bold; color: #3498db;">' . $stats['components_count'] . '</div>';
+        $html .= '<div style="color: #6c757d; font-size: 12px;">部件数量</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="col-sm-3">';
+        $html .= '<div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">';
+        $html .= '<div style="font-size: 24px; font-weight: bold; color: #e74c3c;">' . $stats['materials_count'] . '</div>';
+        $html .= '<div style="color: #6c757d; font-size: 12px;">材料数量</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="col-sm-3">';
+        $html .= '<div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">';
+        $html .= '<div style="font-size: 24px; font-weight: bold; color: #f39c12;">' . $stats['processes_count'] . '</div>';
+        $html .= '<div style="color: #6c757d; font-size: 12px;">工艺数量</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div class="col-sm-3">';
+        $html .= '<div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">';
+        $html .= '<div style="font-size: 24px; font-weight: bold; color: ' . ($stats['bom_complete'] ? '#28a745' : '#dc3545') . ';">';
+        $html .= $stats['bom_complete'] ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>';
+        $html .= '</div>';
+        $html .= '<div style="color: #6c757d; font-size: 12px;">BOM完整性</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        
+        // 时间信息
+        $html .= '<hr>';
+        $html .= '<div class="row">';
+        $html .= '<div class="col-sm-6"><strong>创建时间:</strong> ' . date('Y-m-d H:i:s', $product->createtime) . '</div>';
+        $html .= '<div class="col-sm-6"><strong>更新时间:</strong> ' . date('Y-m-d H:i:s', $product->updatetime) . '</div>';
+        $html .= '</div>';
+        
+        $html .= '</div>';
+        
+        return $html;
+    }
+
+    /**
+     * 导出产品列表
+     */
+    public function export()
+    {
+        // 这里可以实现产品列表导出逻辑
+        $this->success('导出功能开发中...');
+    }
+
+    /**
+     * 批量导入产品
+     */
+    public function import()
+    {
+        if ($this->request->isPost()) {
+            // 处理导入逻辑
+            $this->success('导入功能开发中...');
+        }
+
+        return $this->view->fetch();
+    }
 }

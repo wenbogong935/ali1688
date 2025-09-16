@@ -1,43 +1,161 @@
-<div class="panel panel-default panel-intro">
-    <div class="panel-heading">
-        <div class="btn-group" id="toolbar">
-            <a class="btn btn-primary btn-add {:$auth->check('bom/product/add')?'':'hide'}" title="{:__('Add')}" href="javascript:;"><i class="fa fa-plus"></i> {:__('Add')}</a>
-            <a class="btn btn-primary btn-edit btn-disabled disabled {:$auth->check('bom/product/edit')?'':'hide'}" title="{:__('Edit')}" href="javascript:;"><i class="fa fa-pencil"></i> {:__('Edit')}</a>
-            <a class="btn btn-danger btn-del btn-disabled disabled {:$auth->check('bom/product/del')?'':'hide'}" title="{:__('Delete')}" href="javascript:;"><i class="fa fa-trash"></i> {:__('Delete')}</a>
-            <a class="btn btn-success btn-bom btn-disabled disabled {:$auth->check('bom/product/bom')?'':'hide'}" title="BOM管理" href="javascript:;"><i class="fa fa-sitemap"></i> BOM管理</a>
-            <a class="btn btn-info btn-calculate btn-disabled disabled {:$auth->check('bom/product/calculate')?'':'hide'}" title="成本计算" href="javascript:;"><i class="fa fa-calculator"></i> 成本计算</a>
+<link rel="stylesheet" href="{:config('site.cdnurl')}/assets/css/bom-enhanced.css">
+
+<div class="panel panel-default panel-intro bom-module">
+    <div class="panel-heading" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 6px 6px 0 0;">
+        <h3 class="panel-title" style="color: white; font-weight: 600;">
+            <i class="fa fa-cubes"></i> BOM产品管理
+            <small style="opacity: 0.8; margin-left: 10px;">物料清单与成本核算管理系统</small>
+        </h3>
+        <div class="btn-group-modern" id="toolbar" style="float: right; margin-top: -5px;">
+            <a class="btn btn-sm btn-gradient-primary btn-add {:$auth->check('bom/product/add')?'':'hide'}" title="添加产品" href="javascript:;">
+                <i class="fa fa-plus"></i> 添加产品
+            </a>
+            <a class="btn btn-sm btn-warning btn-edit btn-disabled disabled {:$auth->check('bom/product/edit')?'':'hide'}" title="编辑产品" href="javascript:;">
+                <i class="fa fa-pencil"></i> 编辑
+            </a>
+            <a class="btn btn-sm btn-danger btn-del btn-disabled disabled {:$auth->check('bom/product/del')?'':'hide'}" title="删除产品" href="javascript:;">
+                <i class="fa fa-trash"></i> 删除
+            </a>
+            <a class="btn btn-sm btn-gradient-success btn-bom btn-disabled disabled {:$auth->check('bom/product/bom')?'':'hide'}" title="BOM管理" href="javascript:;">
+                <i class="fa fa-sitemap"></i> BOM管理
+            </a>
+            <a class="btn btn-sm btn-gradient-info btn-calculate btn-disabled disabled {:$auth->check('bom/product/calculate')?'':'hide'}" title="成本计算" href="javascript:;">
+                <i class="fa fa-calculator"></i> 成本计算
+            </a>
             <div class="dropdown btn-group {:$auth->check('bom/product/multi')?'':'hide'}">
-                <a class="btn btn-primary btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> {:__('More')}</a>
+                <a class="btn btn-sm btn-default dropdown-toggle btn-disabled disabled" data-toggle="dropdown" title="更多操作">
+                    <i class="fa fa-cog"></i> 更多
+                </a>
                 <ul class="dropdown-menu text-left" role="menu">
-                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=normal"><i class="fa fa-eye"></i> {:__('Set to normal')}</a></li>
-                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=hidden"><i class="fa fa-eye-slash"></i> {:__('Set to hidden')}</a></li>
+                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=active">
+                        <i class="fa fa-eye text-success"></i> 设为启用
+                    </a></li>
+                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=inactive">
+                        <i class="fa fa-eye-slash text-muted"></i> 设为禁用
+                    </a></li>
+                    <li class="divider"></li>
+                    <li><a class="btn btn-link" href="javascript:;" onclick="exportProducts()">
+                        <i class="fa fa-download text-info"></i> 导出产品列表
+                    </a></li>
+                    <li><a class="btn btn-link" href="javascript:;" onclick="importProducts()">
+                        <i class="fa fa-upload text-warning"></i> 批量导入产品
+                    </a></li>
                 </ul>
             </div>
         </div>
+        <div class="clearfix"></div>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" style="background: #fafbfc;">
+        <!-- 统计面板 -->
+        <div class="row" style="margin-bottom: 20px;">
+            <div class="col-md-3">
+                <div class="card-modern" style="padding: 20px; text-align: center;">
+                    <div class="text-gradient" style="font-size: 24px; font-weight: bold;" id="total-products">-</div>
+                    <div style="color: #6c757d; font-size: 12px; margin-top: 5px;">总产品数</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-modern" style="padding: 20px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #28a745;" id="active-products">-</div>
+                    <div style="color: #6c757d; font-size: 12px; margin-top: 5px;">启用产品</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-modern" style="padding: 20px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #ffc107;" id="pending-products">-</div>
+                    <div style="color: #6c757d; font-size: 12px; margin-top: 5px;">待完善BOM</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-modern" style="padding: 20px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #17a2b8;" id="calculated-products">-</div>
+                    <div style="color: #6c757d; font-size: 12px; margin-top: 5px;">已计算成本</div>
+                </div>
+            </div>
+        </div>
+        
         <div class="row">
             <div class="col-xs-12">
-                <table id="table" class="table table-striped table-bordered table-hover table-nowrap" 
-                       data-operate-edit="{:$auth->check('bom/product/edit')}" 
-                       data-operate-del="{:$auth->check('bom/product/del')}" 
-                       width="100%">
-                </table>
+                <div class="card-modern" style="padding: 0; overflow: hidden;">
+                    <table id="table" class="table table-modern table-striped table-bordered table-hover" 
+                           data-operate-edit="{:$auth->check('bom/product/edit')}" 
+                           data-operate-del="{:$auth->check('bom/product/del')}" 
+                           width="100%">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 产品预览模态框 -->
+<div class="modal fade" id="productPreviewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <button type="button" class="close" data-dismiss="modal" style="color: white; opacity: 0.8;">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title"><i class="fa fa-eye"></i> 产品预览</h4>
+            </div>
+            <div class="modal-body" id="productPreviewContent">
+                <!-- 动态加载内容 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-gradient-primary" onclick="editProductFromPreview()">编辑产品</button>
+                <button type="button" class="btn btn-gradient-success" onclick="manageBomFromPreview()">管理BOM</button>
             </div>
         </div>
     </div>
 </div>
 
 <script type="text/html" id="imagetpl">
-<a href="{{# d.image }}" target="_blank" class="label bg-green">
-    <img src="{{# d.image }}" style="max-height:18px;max-width:50px">
-</a>
+<div style="text-align: center;">
+{{# if(d.image) { }}
+    <a href="{{# d.image }}" target="_blank" class="image-preview" data-toggle="tooltip" title="点击查看大图">
+        <img src="{{# d.image }}" style="max-height: 40px; max-width: 60px; border-radius: 4px; border: 1px solid #e9ecef; object-fit: cover;">
+    </a>
+{{# } else { }}
+    <div style="width: 60px; height: 40px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+        <i class="fa fa-image text-muted"></i>
+    </div>
+{{# } }}
+</div>
 </script>
 
 <script type="text/html" id="formulatpl">
-{{# if(d.FAT_FIELD_NAME) { }}
-    <span class="text-muted">{{# d.FAT_FIELD_NAME }}</span>
+<div style="font-size: 12px;">
+{{# if(d.FAT_FIELD_NAME && d.FAT_FIELD_NAME.trim()) { }}
+    <span class="badge badge-modern" style="background: linear-gradient(45deg, #56ab2f, #a8e6cf); color: white;">
+        {{# d.FAT_FIELD_NAME }}
+    </span>
 {{# } else { }}
-    <span class="text-danger">未设置</span>
+    <span class="badge badge-modern" style="background: #f8f9fa; color: #6c757d; border: 1px solid #e9ecef;">
+        未设置
+    </span>
 {{# } }}
+</div>
+</script>
+
+<script type="text/html" id="statustpl">
+{{# if(d.status == 'active') { }}
+    <span class="badge badge-status-active">启用</span>
+{{# } else { }}
+    <span class="badge badge-status-inactive">禁用</span>
+{{# } }}
+</script>
+
+<script type="text/html" id="actionstpl">
+<div class="btn-group-modern" style="justify-content: center;">
+    <button type="button" class="btn btn-xs btn-default" onclick="previewProduct({{# d.id }})" title="预览产品">
+        <i class="fa fa-eye"></i>
+    </button>
+    <button type="button" class="btn btn-xs btn-gradient-success" onclick="manageBom({{# d.id }})" title="管理BOM">
+        <i class="fa fa-sitemap"></i>
+    </button>
+    <button type="button" class="btn btn-xs btn-gradient-info" onclick="calculateCost({{# d.id }})" title="成本计算">
+        <i class="fa fa-calculator"></i>
+    </button>
+</div>
 </script>

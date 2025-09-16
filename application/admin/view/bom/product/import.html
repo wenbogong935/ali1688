@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>批量导入产品</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{:config('site.cdnurl')}/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{:config('site.cdnurl')}/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{:config('site.cdnurl')}/assets/css/fastadmin.min.css">
+    <link rel="stylesheet" href="{:config('site.cdnurl')}/assets/css/bom-enhanced.css">
+    <style>
+        .import-container {
+            padding: 20px;
+        }
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #e8f4f8;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .template-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="import-container">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h3 class="panel-title">
+                    <i class="fa fa-upload"></i> 批量导入产品
+                    <button type="button" class="close pull-right" onclick="parent.Layer.closeAll()" style="color: white; opacity: 0.8;">
+                        <span>&times;</span>
+                    </button>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <!-- 导入模板下载 -->
+                <div class="template-section">
+                    <h4><i class="fa fa-download text-info"></i> 第一步：下载导入模板</h4>
+                    <p class="text-muted">请先下载标准导入模板，按照模板格式填写产品信息</p>
+                    <button type="button" class="btn btn-gradient-info" onclick="downloadTemplate()">
+                        <i class="fa fa-download"></i> 下载Excel模板
+                    </button>
+                    <a href="javascript:;" class="btn btn-link" onclick="showTemplateFormat()">查看模板格式说明</a>
+                </div>
+
+                <!-- 文件上传区域 -->
+                <div class="template-section">
+                    <h4><i class="fa fa-upload text-success"></i> 第二步：上传填写好的文件</h4>
+                    <form id="import-form" enctype="multipart/form-data">
+                        <div class="upload-area" id="upload-area">
+                            <div class="upload-icon">
+                                <i class="fa fa-cloud-upload"></i>
+                            </div>
+                            <h5>拖拽文件到此处或点击选择文件</h5>
+                            <p class="text-muted">支持 .xlsx, .xls 格式，最大文件大小 10MB</p>
+                            <input type="file" id="file-input" name="file" accept=".xlsx,.xls" style="display: none;">
+                            <button type="button" class="btn btn-gradient-primary" onclick="$('#file-input').click()">
+                                <i class="fa fa-folder-open"></i> 选择文件
+                            </button>
+                        </div>
+
+                        <div id="file-info" style="display: none; margin-top: 15px;">
+                            <div class="alert alert-info">
+                                <i class="fa fa-file-excel"></i>
+                                <strong>已选择文件：</strong> <span id="file-name"></span>
+                                <span class="pull-right">
+                                    <span id="file-size"></span>
+                                    <a href="javascript:;" onclick="clearFile()" class="text-danger" style="margin-left: 10px;">
+                                        <i class="fa fa-times"></i> 移除
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>
+                                <input type="checkbox" id="overwrite-checkbox"> 
+                                覆盖已存在的产品（根据产品名称判断）
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" class="btn btn-gradient-success btn-lg" onclick="startImport()" id="import-btn" disabled>
+                                <i class="fa fa-upload"></i> 开始导入
+                            </button>
+                            <button type="button" class="btn btn-default btn-lg" onclick="parent.Layer.closeAll()">
+                                <i class="fa fa-close"></i> 取消
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 导入进度 -->
+                <div class="template-section" id="progress-section" style="display: none;">
+                    <h4><i class="fa fa-spinner fa-spin text-warning"></i> 导入进度</h4>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar progress-bar-striped active" id="progress-bar" role="progressbar" style="width: 0%;">
+                            <span id="progress-text">0%</span>
+                        </div>
+                    </div>
+                    <div id="import-log" style="max-height: 200px; overflow-y: auto; margin-top: 15px;">
+                        <!-- 导入日志 -->
+                    </div>
+                </div>
+
+                <!-- 导入结果 -->
+                <div class="template-section" id="result-section" style="display: none;">
+                    <h4><i class="fa fa-check-circle text-success"></i> 导入完成</h4>
+                    <div id="import-summary">
+                        <!-- 导入摘要 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模板格式说明模态框 -->
+    <div class="modal fade" id="formatModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title"><i class="fa fa-info-circle"></i> 导入模板格式说明</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="active">
+                                    <th width="20%">字段名</th>
+                                    <th width="15%">必填</th>
+                                    <th width="20%">数据类型</th>
+                                    <th width="45%">说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>产品名称</td>
+                                    <td><span class="text-danger">是</span></td>
+                                    <td>文本</td>
+                                    <td>产品的唯一名称，不能重复</td>
+                                </tr>
+                                <tr>
+                                    <td>产品描述</td>
+                                    <td>否</td>
+                                    <td>文本</td>
+                                    <td>产品的详细描述信息</td>
+                                </tr>
+                                <tr>
+                                    <td>长度公式</td>
+                                    <td>否</td>
+                                    <td>文本</td>
+                                    <td>如：297 或 =L*0.8（支持公式）</td>
+                                </tr>
+                                <tr>
+                                    <td>宽度公式</td>
+                                    <td>否</td>
+                                    <td>文本</td>
+                                    <td>如：210 或 =W*0.6（支持公式）</td>
+                                </tr>
+                                <tr>
+                                    <td>高度公式</td>
+                                    <td>否</td>
+                                    <td>文本</td>
+                                    <td>如：30 或 =H+10（支持公式）</td>
+                                </tr>
+                                <tr>
+                                    <td>状态</td>
+                                    <td>否</td>
+                                    <td>文本</td>
+                                    <td>active（启用）或 inactive（禁用），默认为 active</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <strong>注意事项：</strong>
+                        <ul style="margin-bottom: 0; margin-top: 10px;">
+                            <li>Excel文件第一行必须是字段标题</li>
+                            <li>产品名称不能为空且不能重复</li>
+                            <li>公式支持基本数学运算和L、W、H变量</li>
+                            <li>建议一次导入不超过1000条记录</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-gradient-info" onclick="downloadTemplate()">下载模板</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{:config('site.cdnurl')}/assets/js/jquery.min.js"></script>
+    <script src="{:config('site.cdnurl')}/assets/js/bootstrap.min.js"></script>
+    <script src="{:config('site.cdnurl')}/assets/js/fastadmin.min.js"></script>
+    
+    <script>
+        var ImportManager = {
+            selectedFile: null,
+            
+            init: function() {
+                this.bindEvents();
+            },
+            
+            bindEvents: function() {
+                var self = this;
+                
+                // 文件选择事件
+                $('#file-input').on('change', function(e) {
+                    var file = e.target.files[0];
+                    if (file) {
+                        self.handleFileSelect(file);
+                    }
+                });
+                
+                // 拖拽事件
+                var uploadArea = $('#upload-area')[0];
+                uploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    $(this).addClass('dragover');
+                });
+                
+                uploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    $(this).removeClass('dragover');
+                });
+                
+                uploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    $(this).removeClass('dragover');
+                    
+                    var files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        self.handleFileSelect(files[0]);
+                    }
+                });
+            },
+            
+            handleFileSelect: function(file) {
+                // 验证文件类型
+                var allowedTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+                if (allowedTypes.indexOf(file.type) === -1) {
+                    Toastr.error('请选择Excel文件（.xlsx或.xls格式）');
+                    return;
+                }
+                
+                // 验证文件大小（10MB）
+                if (file.size > 10 * 1024 * 1024) {
+                    Toastr.error('文件大小不能超过10MB');
+                    return;
+                }
+                
+                this.selectedFile = file;
+                
+                // 显示文件信息
+                $('#file-name').text(file.name);
+                $('#file-size').text(this.formatFileSize(file.size));
+                $('#file-info').show();
+                $('#import-btn').prop('disabled', false);
+            },
+            
+            formatFileSize: function(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                var k = 1024;
+                var sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                var i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            },
+            
+            startImport: function() {
+                if (!this.selectedFile) {
+                    Toastr.error('请先选择要导入的文件');
+                    return;
+                }
+                
+                // 显示进度区域
+                $('#progress-section').show();
+                $('#import-btn').prop('disabled', true);
+                
+                // 创建FormData
+                var formData = new FormData();
+                formData.append('file', this.selectedFile);
+                formData.append('overwrite', $('#overwrite-checkbox').is(':checked') ? 1 : 0);
+                
+                // 开始上传
+                this.uploadFile(formData);
+            },
+            
+            uploadFile: function(formData) {
+                var self = this;
+                
+                $.ajax({
+                    url: 'bom/product/import',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                self.updateProgress(percentComplete, '上传中...');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(ret) {
+                        if (ret.code === 1) {
+                            self.updateProgress(100, '导入成功');
+                            self.showResult(ret.data);
+                        } else {
+                            self.showError(ret.msg);
+                        }
+                    },
+                    error: function() {
+                        self.showError('导入失败，请重试');
+                    }
+                });
+            },
+            
+            updateProgress: function(percent, text) {
+                $('#progress-bar').css('width', percent + '%');
+                $('#progress-text').text(percent + '% ' + text);
+            },
+            
+            showResult: function(data) {
+                $('#result-section').show();
+                var html = '<div class="row">';
+                html += '<div class="col-sm-3 text-center">';
+                html += '<div style="font-size: 24px; color: #28a745; font-weight: bold;">' + (data.success || 0) + '</div>';
+                html += '<div style="color: #6c757d;">成功导入</div>';
+                html += '</div>';
+                html += '<div class="col-sm-3 text-center">';
+                html += '<div style="font-size: 24px; color: #dc3545; font-weight: bold;">' + (data.failed || 0) + '</div>';
+                html += '<div style="color: #6c757d;">导入失败</div>';
+                html += '</div>';
+                html += '<div class="col-sm-3 text-center">';
+                html += '<div style="font-size: 24px; color: #ffc107; font-weight: bold;">' + (data.skipped || 0) + '</div>';
+                html += '<div style="color: #6c757d;">跳过重复</div>';
+                html += '</div>';
+                html += '<div class="col-sm-3 text-center">';
+                html += '<div style="font-size: 24px; color: #17a2b8; font-weight: bold;">' + (data.total || 0) + '</div>';
+                html += '<div style="color: #6c757d;">总记录数</div>';
+                html += '</div>';
+                html += '</div>';
+                
+                if (data.errors && data.errors.length > 0) {
+                    html += '<div style="margin-top: 20px;"><h5>错误详情：</h5>';
+                    html += '<div class="alert alert-danger"><ul style="margin-bottom: 0;">';
+                    data.errors.forEach(function(error) {
+                        html += '<li>' + error + '</li>';
+                    });
+                    html += '</ul></div></div>';
+                }
+                
+                $('#import-summary').html(html);
+                Toastr.success('导入完成！成功导入 ' + (data.success || 0) + ' 条记录');
+            },
+            
+            showError: function(message) {
+                $('#import-log').append('<div class="alert alert-danger">' + message + '</div>');
+                $('#import-btn').prop('disabled', false);
+            }
+        };
+        
+        // 全局函数
+        window.downloadTemplate = function() {
+            var link = document.createElement('a');
+            link.href = 'bom/product/downloadTemplate';
+            link.download = '产品导入模板.xlsx';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            Toastr.success('正在下载模板文件...');
+        };
+        
+        window.showTemplateFormat = function() {
+            $('#formatModal').modal('show');
+        };
+        
+        window.clearFile = function() {
+            ImportManager.selectedFile = null;
+            $('#file-input').val('');
+            $('#file-info').hide();
+            $('#import-btn').prop('disabled', true);
+        };
+        
+        window.startImport = function() {
+            ImportManager.startImport();
+        };
+        
+        // 页面初始化
+        $(document).ready(function() {
+            ImportManager.init();
+        });
+    </script>
+</body>
+</html>
