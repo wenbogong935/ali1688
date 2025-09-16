@@ -1,0 +1,82 @@
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+
+    var Controller = {
+        index: function () {
+            // 初始化表格参数
+            Table.api.init({
+                extend: {
+                    index_url: 'bom/rawmaterial/index' + location.search,
+                    add_url: 'bom/rawmaterial/add',
+                    edit_url: 'bom/rawmaterial/edit',
+                    del_url: 'bom/rawmaterial/del',
+                    multi_url: 'bom/rawmaterial/multi',
+                    import_url: 'bom/rawmaterial/import',
+                    table: 'raw_materials',
+                }
+            });
+
+            var table = $("#table");
+
+            // 初始化表格
+            table.bootstrapTable({
+                url: $.fn.bootstrapTable.defaults.extend.index_url,
+                pk: 'id',
+                sortName: 'id',
+                columns: [
+                    [
+                        {checkbox: true},
+                        {field: 'id', title: __('Id')},
+                        {field: 'name', title: __('Name'), operate: 'LIKE'},
+                        {field: 'description', title: __('Description'), operate: 'LIKE'},
+                        {field: 'type', title: '材料类型', operate: '=', searchList: {"纸类":"纸类","塑料类":"塑料类","金属类":"金属类","木材类":"木材类","玻璃类":"玻璃类","陶瓷类":"陶瓷类","纺织品":"纺织品","化学品":"化学品","其他":"其他"}},
+                        {field: 'unit_of_measure', title: '计量单位', operate: '=', searchList: {"per_kg":"每公斤","per_sqm":"每平方米","per_piece":"每件","per_roll":"每卷","per_sheet":"每张","per_meter":"每米"}},
+                        {field: 'unit_cost', title: '单位成本', operate: 'BETWEEN', sortable: true, formatter: function(value, row, index) {
+                            return '￥' + parseFloat(value).toFixed(2);
+                        }},
+                        {field: 'standard_length', title: '标准长度(cm)', operate: 'BETWEEN', sortable: true},
+                        {field: 'standard_width', title: '标准宽度(cm)', operate: 'BETWEEN', sortable: true},
+                        {field: 'gsm', title: '克重(gsm)', operate: 'BETWEEN', sortable: true},
+                        {field: 'thickness', title: '厚度(mm)', operate: 'BETWEEN', sortable: true},
+                        {field: 'density', title: '密度(g/cm³)', operate: 'BETWEEN', sortable: true},
+                        {field: 'supplier', title: '供应商', operate: 'LIKE'},
+                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'updatetime', title: __('Updatetime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                    ]
+                ]
+            });
+
+            // 为表格绑定事件
+            Table.api.bindevent(table);
+
+            // 批量导入
+            $(document).on("click", ".btn-import", function () {
+                Fast.api.open("bom/rawmaterial/import", "批量导入原材料", {
+                    area: ["90%", "90%"],
+                    callback: function(data) {
+                        table.bootstrapTable('refresh');
+                    }
+                });
+            });
+
+            // 导出模板
+            $(document).on("click", ".btn-export-template", function () {
+                Fast.api.open("bom/rawmaterial/export_template", "导出模板", {
+                    area: ["50%", "50%"]
+                });
+            });
+        },
+        add: function () {
+            Controller.api.bindevent();
+        },
+        edit: function () {
+            Controller.api.bindevent();
+        },
+        api: {
+            bindevent: function () {
+                Form.api.bindevent($("form[role=form]"));
+            }
+        }
+    };
+    return Controller;
+});

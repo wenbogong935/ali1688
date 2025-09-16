@@ -1,0 +1,37 @@
+<div class="panel panel-default panel-intro">
+    <div class="panel-heading">
+        <div class="btn-group" id="toolbar">
+            <a class="btn btn-primary btn-add {:$auth->check('bom/component/add')?'':'hide'}" title="{:__('Add')}" href="javascript:;"><i class="fa fa-plus"></i> {:__('Add')}</a>
+            <a class="btn btn-primary btn-edit btn-disabled disabled {:$auth->check('bom/component/edit')?'':'hide'}" title="{:__('Edit')}" href="javascript:;"><i class="fa fa-pencil"></i> {:__('Edit')}</a>
+            <a class="btn btn-danger btn-del btn-disabled disabled {:$auth->check('bom/component/del')?'':'hide'}" title="{:__('Delete')}" href="javascript:;"><i class="fa fa-trash"></i> {:__('Delete')}</a>
+            <a class="btn btn-success btn-tree-expand" title="展开全部" href="javascript:;"><i class="fa fa-plus-square-o"></i> 展开全部</a>
+            <a class="btn btn-warning btn-tree-collapse" title="收起全部" href="javascript:;"><i class="fa fa-minus-square-o"></i> 收起全部</a>
+            <div class="dropdown btn-group {:$auth->check('bom/component/multi')?'':'hide'}">
+                <a class="btn btn-primary btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> {:__('More')}</a>
+                <ul class="dropdown-menu text-left" role="menu">
+                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=normal"><i class="fa fa-eye"></i> {:__('Set to normal')}</a></li>
+                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=hidden"><i class="fa fa-eye-slash"></i> {:__('Set to hidden')}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <table id="table" class="table table-striped table-bordered table-hover" 
+                       data-operate-edit="{:$auth->check('bom/component/edit')}" 
+                       data-operate-del="{:$auth->check('bom/component/del')}" 
+                       width="100%">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="formulatpl">
+{{# if(d.FAT_FIELD_NAME) { }}
+    <span class="text-success">{{# d.FAT_FIELD_NAME }}</span>
+{{# } else { }}
+    <span class="text-muted">未设置</span>
+{{# } }}
+</script>

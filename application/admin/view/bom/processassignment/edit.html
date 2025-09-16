@@ -1,0 +1,90 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">分配类型:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-assignment_type" data-rule="required" class="form-control selectpicker" name="row[assignment_type]" onchange="Controller.api.toggleAssignmentFields(this.value)">
+                <option value="">请选择分配类型</option>
+                <option value="component" {eq name="$row.assignment_type" value="component"}selected{/eq}>部件工艺</option>
+                <option value="material" {eq name="$row.assignment_type" value="material"}selected{/eq}>材料工艺</option>
+            </select>
+            <span class="help-block">选择工艺分配给部件还是材料</span>
+        </div>
+    </div>
+    <div class="form-group" id="component-field" style="display:{eq name='$row.assignment_type' value='component'}block{else/}none{/eq};">
+        <label class="control-label col-xs-12 col-sm-2">部件:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-component_id" class="form-control selectpicker" name="row[component_id]" data-live-search="true">
+                <option value="">请选择部件</option>
+                {volist name="componentList" id="vo" key="k"}
+                <option value="{$k}" {eq name="k" value="$row.component_id"}selected{/eq}>{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="form-group" id="material-field" style="display:{eq name='$row.assignment_type' value='material'}block{else/}none{/eq};">
+        <label class="control-label col-xs-12 col-sm-2">材料使用:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-material_usage_id" class="form-control selectpicker" name="row[material_usage_id]" data-live-search="true">
+                <option value="">请选择材料使用</option>
+                {volist name="materialUsageList" id="vo" key="k"}
+                <option value="{$k}" {eq name="k" value="$row.material_usage_id"}selected{/eq}>{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">工艺:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-process_id" data-rule="required" class="form-control selectpicker" name="row[process_id]" data-live-search="true" onchange="Controller.api.loadProcessInfo(this.value)">
+                <option value="">请选择工艺</option>
+                {volist name="processList" id="vo" key="k"}
+                <option value="{$k}" {eq name="k" value="$row.process_id"}selected{/eq}>{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">工艺顺序:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-process_order" data-rule="required;integer" class="form-control" name="row[process_order]" type="number" step="1" value="{$row.process_order}" placeholder="请输入工艺顺序">
+            <span class="help-block">工艺执行的先后顺序</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">费率覆盖:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-rate_override" class="form-control" name="row[rate_override]" type="number" step="0.01" value="{$row.rate_override}" placeholder="覆盖默认费率">
+            <span class="help-block">留空使用工艺默认费率</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">设置费覆盖:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-setup_cost_override" class="form-control" name="row[setup_cost_override]" type="number" step="0.01" value="{$row.setup_cost_override}" placeholder="覆盖默认设置费">
+            <span class="help-block">留空使用工艺默认设置费</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">拼版影响:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-panel_affects_cost" class="form-control selectpicker" name="row[panel_affects_cost]">
+                <option value="1" {eq name="$row.panel_affects_cost" value="1"}selected{/eq}>是</option>
+                <option value="0" {eq name="$row.panel_affects_cost" value="0"}selected{/eq}>否</option>
+            </select>
+            <span class="help-block">拼版是否影响此工艺的成本计算</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">转换属性:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-transform_attribute" class="form-control" name="row[transform_attribute]" type="text" value="{$row.transform_attribute|htmlentities}" placeholder="如: rotate_90, flip_h">
+            <span class="help-block">可选的转换属性，影响尺寸计算</span>
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

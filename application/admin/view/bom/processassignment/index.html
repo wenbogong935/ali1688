@@ -1,0 +1,47 @@
+<div class="panel panel-default panel-intro">
+    <div class="panel-heading">
+        <div class="btn-group" id="toolbar">
+            <a class="btn btn-primary btn-add {:$auth->check('bom/processassignment/add')?'':'hide'}" title="{:__('Add')}" href="javascript:;"><i class="fa fa-plus"></i> {:__('Add')}</a>
+            <a class="btn btn-primary btn-edit btn-disabled disabled {:$auth->check('bom/processassignment/edit')?'':'hide'}" title="{:__('Edit')}" href="javascript:;"><i class="fa fa-pencil"></i> {:__('Edit')}</a>
+            <a class="btn btn-danger btn-del btn-disabled disabled {:$auth->check('bom/processassignment/del')?'':'hide'}" title="{:__('Delete')}" href="javascript:;"><i class="fa fa-trash"></i> {:__('Delete')}</a>
+            <a class="btn btn-warning btn-batch-assign" title="批量分配" href="javascript:;"><i class="fa fa-tasks"></i> 批量分配</a>
+            <a class="btn btn-info btn-workflow" title="工艺流程" href="javascript:;"><i class="fa fa-sitemap"></i> 工艺流程</a>
+            <div class="dropdown btn-group {:$auth->check('bom/processassignment/multi')?'':'hide'}">
+                <a class="btn btn-primary btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> {:__('More')}</a>
+                <ul class="dropdown-menu text-left" role="menu">
+                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=normal"><i class="fa fa-eye"></i> {:__('Set to normal')}</a></li>
+                    <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=hidden"><i class="fa fa-eye-slash"></i> {:__('Set to hidden')}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <table id="table" class="table table-striped table-bordered table-hover table-nowrap" 
+                       data-operate-edit="{:$auth->check('bom/processassignment/edit')}" 
+                       data-operate-del="{:$auth->check('bom/processassignment/del')}" 
+                       width="100%">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="assignmenttypetpl">
+{{# var types = {
+    'component': '<span class="label label-primary">部件</span>',
+    'material': '<span class="label label-success">材料</span>'
+}; }}
+{{# types[d.assignment_type] || d.assignment_type }}
+</script>
+
+<script type="text/html" id="costtypetpl">
+{{# var types = {
+    'per_unit_variable': '<span class="label label-primary">每单位可变</span>',
+    'per_area_variable': '<span class="label label-success">每面积可变</span>',
+    'per_time_variable': '<span class="label label-info">每时间可变</span>',
+    'fixed': '<span class="label label-warning">固定</span>'
+}; }}
+{{# types[d.cost_type] || d.cost_type }}
+</script>

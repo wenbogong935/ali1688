@@ -1,0 +1,77 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-name" data-rule="required" class="form-control" name="row[name]" type="text" value="{$row.name|htmlentities}" placeholder="请输入部件名称">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Description')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-description" class="form-control" rows="3" name="row[description]" cols="50" placeholder="请输入部件描述">{$row.description|htmlentities}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">所属产品:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-product_id" data-rule="required" class="form-control selectpicker" name="row[product_id]">
+                <option value="">请选择产品</option>
+                {volist name="productList" id="vo" key="k"}
+                <option value="{$k}" {eq name="k" value="$row.product_id"}selected{/eq}>{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">父部件:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-parent_component_id" class="form-control selectpicker" name="row[parent_component_id]">
+                <option value="">无（顶级部件）</option>
+                {volist name="componentList" id="vo" key="k"}
+                {neq name="k" value="$row.id"}
+                <option value="{$k}" {eq name="k" value="$row.parent_component_id"}selected{/eq}>{$vo}</option>
+                {/neq}
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">数量:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-quantity" data-rule="required;number" class="form-control" name="row[quantity]" type="number" step="0.01" value="{$row.quantity}" placeholder="请输入数量">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">长度公式:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-length_formula" class="form-control" name="row[length_formula]" type="text" value="{$row.length_formula|htmlentities}" placeholder="如: 100 或 =L*0.8">
+            <span class="help-block">支持固定值或公式（=开头），可使用L、W、H变量</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">宽度公式:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-width_formula" class="form-control" name="row[width_formula]" type="text" value="{$row.width_formula|htmlentities}" placeholder="如: 100 或 =W*0.8">
+            <span class="help-block">支持固定值或公式（=开头），可使用L、W、H变量</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">高度公式:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-height_formula" class="form-control" name="row[height_formula]" type="text" value="{$row.height_formula|htmlentities}" placeholder="如: 10 或 =H+2">
+            <span class="help-block">支持固定值或公式（=开头），可使用L、W、H变量</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">排序:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-sequence" data-rule="required;integer" class="form-control" name="row[sequence]" type="number" value="{$row.sequence}" placeholder="请输入排序值">
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>
