@@ -83,26 +83,26 @@ class ProcessAssignment extends Backend
                 $row->visible(['id','component_id','material_usage_id','parent_assignment_id','process_id','alias','sequence','cost_override','is_affected_by_imposition','is_transformative','createtime','updatetime']);
                 $row->visible(['component', 'materialUsage', 'process', 'parent']);
                 
-                if ($row->component) {
-                    $row->getRelation('component')->visible(['name', 'product']);
-                    if ($row->component->product) {
-                        $row->getRelation('component')->getRelation('product')->visible(['name']);
+                if ($component = $row->getRelation('component')) {
+                    $component->visible(['name', 'product']);
+                    if ($product = $component->getRelation('product')) {
+                        $product->visible(['name']);
                     }
                 }
                 
-                if ($row->materialUsage) {
-                    $row->getRelation('materialUsage')->visible(['alias', 'rawMaterial']);
-                    if ($row->materialUsage->rawMaterial) {
-                        $row->getRelation('materialUsage')->getRelation('rawMaterial')->visible(['name']);
+                if ($materialUsage = $row->getRelation('materialUsage')) {
+                    $materialUsage->visible(['alias', 'rawMaterial']);
+                    if ($rawMaterial = $materialUsage->getRelation('rawMaterial')) {
+                        $rawMaterial->visible(['name']);
                     }
                 }
                 
-                if ($row->process) {
-                    $row->getRelation('process')->visible(['name', 'cost_type']);
+                if ($process = $row->getRelation('process')) {
+                    $process->visible(['name', 'cost_type']);
                 }
                 
-                if ($row->parent) {
-                    $row->getRelation('parent')->visible(['alias']);
+                if ($parent = $row->getRelation('parent')) {
+                    $parent->visible(['alias']);
                 }
             }
 

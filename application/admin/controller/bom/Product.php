@@ -244,18 +244,14 @@ class Product extends Backend
 
             // 6. 返回结果
             if ($this->request->isAjax()) {
+                $annotatedProduct->append(['resolved_l', 'resolved_w', 'resolved_h']);
                 $this->success('计算成功', '', [
                     'summary' => $costSummary,
-                    'product' => [
-                        'id' => $annotatedProduct->id,
-                        'name' => $annotatedProduct->name,
-                        'resolved_l' => $annotatedProduct->resolved_l,
-                        'resolved_w' => $annotatedProduct->resolved_w,
-                        'resolved_h' => $annotatedProduct->resolved_h
-                    ]
+                    'product' => $annotatedProduct->toArray()
                 ]);
             } else {
                 // 非AJAX请求，返回页面视图
+                $annotatedProduct->append(['resolved_l', 'resolved_w', 'resolved_h']);
                 $this->view->assign('product', $annotatedProduct);
                 $this->view->assign('costSummary', $costSummary);
                 $this->view->assign('configParams', $configParams);

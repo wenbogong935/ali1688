@@ -18,9 +18,6 @@ class Product extends Model
     
     // 追加属性
     protected $append = [
-        'resolved_l',
-        'resolved_w', 
-        'resolved_h'
     ];
 
     /**

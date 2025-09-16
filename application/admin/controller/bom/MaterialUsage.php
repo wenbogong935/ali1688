@@ -67,11 +67,15 @@ class MaterialUsage extends Backend
             foreach ($list as $row) {
                 $row->visible(['id','component_id','raw_material_id','length_formula','width_formula','height_formula','panel','gsm_override','thickness_override','density_override','sequence','createtime','updatetime']);
                 $row->visible(['component', 'rawMaterial']);
-                $row->getRelation('component')->visible(['name', 'product']);
-                if ($row->component && $row->component->product) {
-                    $row->getRelation('component')->getRelation('product')->visible(['name']);
+                if ($component = $row->getRelation('component')) {
+                    $component->visible(['name', 'product']);
+                    if ($product = $component->getRelation('product')) {
+                        $product->visible(['name']);
+                    }
                 }
-                $row->getRelation('rawMaterial')->visible(['name', 'type']);
+                if ($rawMaterial = $row->getRelation('rawMaterial')) {
+                    $rawMaterial->visible(['name', 'type']);
+                }
             }
 
             $result = array("total" => $list->total(), "rows" => $list->items());
