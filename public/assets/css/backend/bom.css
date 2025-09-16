@@ -1,12 +1,32 @@
 /* BOM Management CSS Styles */
 
-/* BOM Tree Styles */
+/* Enhanced BOM Tree Styles */
 .bom-tree-container {
     background: #fff;
     border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    padding: 15px;
-    margin-bottom: 20px;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* BOM Header Styles */
+.bom-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 6px 6px 0 0;
+    margin: -20px -20px 20px -20px;
+}
+
+.bom-header h3 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.bom-header .btn {
+    margin-left: 10px;
 }
 
 .bom-tree {
@@ -356,5 +376,166 @@
     
     .process-arrow {
         transform: rotate(90deg);
+    }
+}
+
+/* Integration with FastAdmin backend theme */
+.content-wrapper .bom-container {
+    padding: 0;
+}
+
+.bom-container .panel {
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+/* Enhanced table styles for BOM */
+.table-bom {
+    font-size: 13px;
+}
+
+.table-bom .formula-cell {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 11px;
+    background-color: #f8f9fa;
+}
+
+.table-bom .status-cell {
+    text-align: center;
+}
+
+/* Form enhancements */
+.form-bom .form-group {
+    margin-bottom: 20px;
+}
+
+.form-bom .panel-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-bom .help-block {
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+/* Button enhancements */
+.btn-bom {
+    border-radius: 3px;
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.btn-bom.btn-sm {
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+/* Alert message styles */
+.alert-bom {
+    border-radius: 4px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+}
+
+.alert-bom .fa {
+    margin-right: 8px;
+}
+
+/* Preview panels */
+.preview-panel {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.preview-panel h6 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Formula input enhancements */
+.formula-input {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+}
+
+.formula-input:focus {
+    background-color: #fff;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.formula-input.is-invalid {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+/* Tree view enhancements */
+.bom-tree .tree-node {
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.bom-tree .tree-node:hover {
+    background-color: #f8f9fa;
+}
+
+.bom-tree .tree-node.selected {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.bom-tree .node-icon {
+    width: 16px;
+    text-align: center;
+}
+
+.bom-tree .node-title {
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+.bom-tree .node-info {
+    margin-left: 10px;
+    font-size: 11px;
+}
+
+/* Loading animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.fa-spin {
+    animation: spin 1s infinite linear;
+}
+
+/* Print styles */
+@media print {
+    .bom-container {
+        max-width: none;
+        margin: 0;
+    }
+    
+    .btn, .dropdown {
+        display: none !important;
+    }
+    
+    .panel {
+        border: 1px solid #000;
+        break-inside: avoid;
+    }
+    
+    .cost-summary-card {
+        background: #f0f0f0 !important;
+        color: #000 !important;
     }
 }

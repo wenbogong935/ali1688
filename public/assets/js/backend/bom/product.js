@@ -26,21 +26,27 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     [
                         {checkbox: true},
                         {field: 'id', title: __('Id')},
-                        {field: 'name', title: __('Name'), operate: 'LIKE'},
+                        {field: 'name', title: __('Name'), operate: 'LIKE', 
+                         formatter: function(value, row, index) {
+                             var status = row.status === 'active' ? 
+                                '<span class="label label-success">启用</span>' : 
+                                '<span class="label label-default">禁用</span>';
+                             return '<strong>' + value + '</strong> ' + status;
+                         }},
                         {field: 'description', title: __('Description'), operate: 'LIKE'},
-                        {field: 'image', title: __('Image'), operate: false, events: Table.api.events.image, formatter: Table.api.formatter.image},
-                        {field: 'length_formula', title: '长度公式', operate: 'LIKE', formatter: function(value, row, index) {
-                            return value || '<span class="text-muted">未设置</span>';
-                        }},
-                        {field: 'width_formula', title: '宽度公式', operate: 'LIKE', formatter: function(value, row, index) {
-                            return value || '<span class="text-muted">未设置</span>';
-                        }},
-                        {field: 'height_formula', title: '高度公式', operate: 'LIKE', formatter: function(value, row, index) {
-                            return value || '<span class="text-muted">未设置</span>';
-                        }},
-                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
-                        {field: 'updatetime', title: __('Updatetime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
-                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, 
+                        {field: 'image', title: __('Image'), operate: false, 
+                         events: Table.api.events.image, formatter: Table.api.formatter.image},
+                        {field: 'length_formula', title: '长度公式', operate: 'LIKE', 
+                         formatter: Controller.api.formatFormula},
+                        {field: 'width_formula', title: '宽度公式', operate: 'LIKE', 
+                         formatter: Controller.api.formatFormula},
+                        {field: 'height_formula', title: '高度公式', operate: 'LIKE', 
+                         formatter: Controller.api.formatFormula},
+                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', 
+                         addclass:'datetimerange', autocomplete:false, 
+                         formatter: Table.api.formatter.datetime},
+                        {field: 'operate', title: __('Operate'), table: table, 
+                         events: Table.api.events.operate, 
                          buttons: [
                              {
                                  name: 'bom',
@@ -49,9 +55,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                  classname: 'btn btn-xs btn-success btn-dialog',
                                  icon: 'fa fa-sitemap',
                                  url: 'bom/product/bom',
-                                 callback: function (data) {
-                                     Layer.alert("接收到回传数据：" + JSON.stringify(data), {title: "回传数据"});
-                                 }
+                                 extend: 'data-area=\'["90%","90%"]\''
                              },
                              {
                                  name: 'calculate',
@@ -60,9 +64,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                  classname: 'btn btn-xs btn-info btn-dialog',
                                  icon: 'fa fa-calculator',
                                  url: 'bom/product/calculate',
-                                 callback: function (data) {
-                                     Layer.alert("计算完成", {title: "成本计算"});
-                                 }
+                                 extend: 'data-area=\'["90%","90%"]\''
                              }
                          ],
                          formatter: Table.api.formatter.operate
@@ -73,56 +75,18 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             // 为表格绑定事件
             Table.api.bindevent(table);
-            
-            // BOM管理按钮事件
-            $(document).on('click', '.btn-bom', function () {
-                var ids = Table.api.selectedids(table);
-                if (ids.length === 0) {
-                    Toastr.error("请先选择一个产品");
-                    return false;
-                }
-                if (ids.length > 1) {
-                    Toastr.error("只能选择一个产品进行BOM管理");
-                    return false;
-                }
-                var url = 'bom/product/bom/ids/' + ids.join(',');
-                Fast.api.open(url, 'BOM管理', {
-                    area: ['90%', '90%']
-                });
-                return false;
-            });
-
-            // 成本计算按钮事件
-            $(document).on('click', '.btn-calculate', function () {
-                var ids = Table.api.selectedids(table);
-                if (ids.length === 0) {
-                    Toastr.error("请先选择一个产品");
-                    return false;
-                }
-                if (ids.length > 1) {
-                    Toastr.error("只能选择一个产品进行成本计算");
-                    return false;
-                }
-                var url = 'bom/product/calculate/ids/' + ids.join(',');
-                Fast.api.open(url, '成本计算', {
-                    area: ['90%', '90%']
-                });
-                return false;
-            });
         },
+        
         add: function () {
             Controller.api.bindevent();
+            Controller.api.initFormulas();
         },
+        
         edit: function () {
             Controller.api.bindevent();
+            Controller.api.initFormulas();
         },
-        },
-        add: function () {
-            Controller.api.bindevent();
-        },
-        edit: function () {
-            Controller.api.bindevent();
-        },
+        
         bom: function () {
             Controller.api.bindevent();
             
@@ -131,16 +95,49 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             
             // 绑定树节点事件
             Controller.api.bindTreeEvents();
+            
+            // 绑定工具栏事件
+            Controller.api.bindBomToolbar();
         },
+        
         calculate: function () {
             Controller.api.bindevent();
             
             // 初始化成本计算界面
             Controller.api.initCostCalculation();
         },
+        
         api: {
             bindevent: function () {
                 Form.api.bindevent($("form[role=form]"));
+            },
+            
+            // 格式化公式显示
+            formatFormula: function(value, row, index) {
+                if (!value || value === '0') {
+                    return '<span class="text-muted">未设置</span>';
+                }
+                var isFormula = value.startsWith('=');
+                return isFormula ? 
+                    '<code class="text-primary">' + value + '</code>' :
+                    '<strong class="text-success">' + value + '</strong>';
+            },
+            
+            // 初始化公式输入
+            initFormulas: function() {
+                $('.formula-input').addClass('font-monospace');
+                $('.formula-input').on('input', function() {
+                    var isValid = Controller.api.validateFormula($(this).val());
+                    $(this).toggleClass('is-invalid', !isValid);
+                });
+            },
+            
+            // 验证公式
+            validateFormula: function(formula) {
+                if (!formula) return true;
+                if (formula.match(/^\d+(\.\d+)?$/)) return true;
+                if (formula.match(/^=[LWH\d\+\-\*\/\(\)\.\s]+$/)) return true;
+                return false;
             },
             
             // 初始化BOM树
@@ -148,14 +145,22 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 var $bomTree = $("#bom-tree");
                 if ($bomTree.length === 0) return;
                 
-                // 加载BOM树数据
+                var productId = Fast.api.query('ids');
+                if (!productId) return;
+                
                 Fast.api.ajax({
                     url: "bom/product/getBomTree",
-                    data: {id: Fast.api.query('ids')},
+                    data: {id: productId},
                     success: function(data) {
                         if (data.code === 1) {
                             Controller.api.renderBomTree(data.data);
+                        } else {
+                            $bomTree.html('<div class="bom-error"><i class="fa fa-warning"></i> ' + 
+                                        (data.msg || '加载BOM树失败') + '</div>');
                         }
+                    },
+                    error: function() {
+                        $bomTree.html('<div class="bom-error"><i class="fa fa-warning"></i> 网络错误</div>');
                     }
                 });
             },
@@ -166,6 +171,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 $container.empty();
                 
                 function renderNode(node, level) {
+                    level = level || 0;
                     var indent = level * 20;
                     var nodeClass = 'tree-node';
                     var nodeIcon = 'fa-cube';
@@ -181,12 +187,16 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         nodeIcon = 'fa-cogs';
                     }
                     
-                    var nodeHtml = '<div class="' + nodeClass + '" style="margin-left: ' + indent + 'px;" data-id="' + node.id + '" data-type="' + node.type + '">' +
+                    var nodeHtml = '<div class="' + nodeClass + '" style="margin-left: ' + indent + 'px;" ' +
+                        'data-id="' + node.id + '" data-type="' + node.type + '">' +
                         '<i class="fa ' + nodeIcon + ' node-icon ' + node.type + '"></i>' +
-                        '<span class="node-title">' + node.name + '</span>' +
-                        '<span class="node-info text-muted">' + (node.description || '') + '</span>' +
-                        '</div>';
+                        '<span class="node-title">' + node.name + '</span>';
+                        
+                    if (node.description) {
+                        nodeHtml += '<span class="node-info text-muted"> - ' + node.description + '</span>';
+                    }
                     
+                    nodeHtml += '</div>';
                     $container.append(nodeHtml);
                     
                     if (node.children && node.children.length > 0) {
@@ -196,10 +206,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     }
                 }
                 
-                if (treeData.components) {
+                if (treeData && treeData.components) {
                     treeData.components.forEach(function(component) {
                         renderNode(component, 0);
                     });
+                } else {
+                    $container.html('<div class="text-center text-muted"><i class="fa fa-info-circle"></i> 暂无BOM数据</div>');
                 }
             },
             
@@ -216,18 +228,48 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 });
             },
             
+            // 绑定BOM工具栏事件
+            bindBomToolbar: function() {
+                // 展开全部
+                $(document).on('click', '.btn-tree-expand', function() {
+                    $('.tree-node').show();
+                });
+                
+                // 收起全部  
+                $(document).on('click', '.btn-tree-collapse', function() {
+                    $('.tree-node').each(function() {
+                        if ($(this).css('margin-left') !== '0px') {
+                            $(this).hide();
+                        }
+                    });
+                });
+            },
+            
             // 加载节点详情
             loadNodeDetails: function(nodeId, nodeType) {
                 var $detailPanel = $("#bom-detail");
                 if ($detailPanel.length === 0) return;
                 
-                var url = "bom/" + nodeType + "/detail";
+                $detailPanel.html('<div class="bom-loading"><i class="fa fa-spinner fa-spin"></i><br>加载中...</div>');
+                
+                var urlMap = {
+                    'component': 'bom/component/detail',
+                    'material': 'bom/rawmaterial/detail', 
+                    'process': 'bom/process/detail'
+                };
+                
+                var url = urlMap[nodeType];
+                if (!url) return;
+                
                 Fast.api.ajax({
                     url: url,
                     data: {id: nodeId},
                     success: function(data) {
                         if (data.code === 1) {
                             Controller.api.renderNodeDetails(data.data, nodeType);
+                        } else {
+                            $detailPanel.html('<div class="bom-error"><i class="fa fa-warning"></i> ' + 
+                                            (data.msg || '加载详情失败') + '</div>');
                         }
                     }
                 });
@@ -237,23 +279,64 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             renderNodeDetails: function(nodeData, nodeType) {
                 var $detailPanel = $("#bom-detail");
                 var detailHtml = '<div class="bom-detail-panel">' +
-                    '<div class="bom-detail-header">' + nodeData.name + ' (' + nodeType + ')</div>' +
-                    '<div class="bom-detail-body">';
+                    '<div class="bom-detail-header">' + 
+                    '<i class="fa fa-info-circle"></i> ' + nodeData.name + 
+                    ' <small class="text-muted">(' + nodeType + ')</small>' +
+                    '</div><div class="bom-detail-body">';
                 
                 if (nodeType === 'component') {
-                    detailHtml += '<p><strong>描述:</strong> ' + (nodeData.description || '无') + '</p>' +
-                        '<p><strong>数量:</strong> ' + (nodeData.quantity || 1) + '</p>' +
-                        '<p><strong>长度公式:</strong> ' + (nodeData.length_formula || '未设置') + '</p>' +
-                        '<p><strong>宽度公式:</strong> ' + (nodeData.width_formula || '未设置') + '</p>' +
-                        '<p><strong>高度公式:</strong> ' + (nodeData.height_formula || '未设置') + '</p>';
+                    detailHtml += '<div class="material-properties">' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">描述</div>' +
+                        '<div class="property-value">' + (nodeData.description || '无') + '</div>' +
+                        '</div>' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">数量</div>' +
+                        '<div class="property-value">' + (nodeData.quantity_per_parent || 1) + '</div>' +
+                        '</div>' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">长度公式</div>' +
+                        '<div class="property-value">' + Controller.api.formatFormula(nodeData.length_formula) + '</div>' +
+                        '</div>' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">宽度公式</div>' +
+                        '<div class="property-value">' + Controller.api.formatFormula(nodeData.width_formula) + '</div>' +
+                        '</div>' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">高度公式</div>' +
+                        '<div class="property-value">' + Controller.api.formatFormula(nodeData.height_formula) + '</div>' +
+                        '</div>' +
+                        '</div>';
                 } else if (nodeType === 'material') {
-                    detailHtml += '<p><strong>类型:</strong> ' + (nodeData.type || '未设置') + '</p>' +
-                        '<p><strong>单位成本:</strong> ￥' + (nodeData.unit_cost || 0) + '</p>' +
-                        '<p><strong>计量单位:</strong> ' + (nodeData.unit_of_measure || '未设置') + '</p>';
+                    detailHtml += '<div class="material-properties">' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">类型</div>' +
+                        '<div class="property-value">' + (nodeData.type || '未设置') + '</div>' +
+                        '</div>' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">单位成本</div>' +
+                        '<div class="property-value">￥' + (nodeData.unit_cost || 0) + '</div>' +
+                        '</div>' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">计量单位</div>' +
+                        '<div class="property-value">' + (nodeData.unit_of_measure || '未设置') + '</div>' +
+                        '</div>' +
+                        '</div>';
                 } else if (nodeType === 'process') {
-                    detailHtml += '<p><strong>成本类型:</strong> ' + (nodeData.cost_type || '未设置') + '</p>' +
-                        '<p><strong>费率:</strong> ￥' + (nodeData.rate || 0) + '</p>' +
-                        '<p><strong>设置费:</strong> ￥' + (nodeData.setup_cost || 0) + '</p>';
+                    detailHtml += '<div class="material-properties">' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">成本类型</div>' +
+                        '<div class="property-value">' + (nodeData.cost_type || '未设置') + '</div>' +
+                        '</div>' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">费率</div>' +
+                        '<div class="property-value">￥' + (nodeData.rate || 0) + '</div>' +
+                        '</div>' +
+                        '<div class="property-item">' +
+                        '<div class="property-label">设置费</div>' +
+                        '<div class="property-value">￥' + (nodeData.setup_cost || 0) + '</div>' +
+                        '</div>' +
+                        '</div>';
                 }
                 
                 detailHtml += '</div></div>';
@@ -263,9 +346,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化成本计算界面
             initCostCalculation: function() {
                 var $calculateBtn = $("#calculate-btn");
+                if ($calculateBtn.length === 0) return;
                 
                 $calculateBtn.on('click', function() {
                     var productId = Fast.api.query('ids');
+                    if (!productId) {
+                        Toastr.error('缺少产品ID参数');
+                        return;
+                    }
+                    
                     var params = {
                         id: productId,
                         packaging_cost: parseFloat($("#packaging_cost").val()) || 0,
@@ -274,13 +363,21 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         small_batch_cost: parseFloat($("#small_batch_cost").val()) || 0
                     };
                     
+                    $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> 计算中...');
+                    
                     Fast.api.ajax({
                         url: "bom/product/calculateCost",
                         data: params,
                         success: function(data) {
                             if (data.code === 1) {
                                 Controller.api.renderCostResults(data.data);
+                                Toastr.success('成本计算完成');
+                            } else {
+                                Toastr.error(data.msg || '计算失败');
                             }
+                        },
+                        complete: function() {
+                            $calculateBtn.prop('disabled', false).html('<i class="fa fa-calculator"></i> 开始计算');
                         }
                     });
                 });
@@ -292,22 +389,56 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 if ($resultsPanel.length === 0) return;
                 
                 var resultsHtml = '<div class="cost-summary-card">' +
-                    '<div class="cost-summary-title">成本计算结果</div>' +
+                    '<div class="cost-summary-title"><i class="fa fa-calculator"></i> 成本计算结果</div>' +
                     '<div class="cost-breakdown">' +
-                    '<div class="cost-item"><div class="cost-item-label">材料成本</div><div class="cost-item-value">￥' + costData.material_cost.toFixed(2) + '</div></div>' +
-                    '<div class="cost-item"><div class="cost-item-label">工艺成本</div><div class="cost-item-value">￥' + costData.process_cost.toFixed(2) + '</div></div>' +
-                    '<div class="cost-item"><div class="cost-item-label">包装费</div><div class="cost-item-value">￥' + costData.packaging_cost.toFixed(2) + '</div></div>' +
-                    '<div class="cost-item"><div class="cost-item-label">人工费</div><div class="cost-item-value">￥' + costData.labor_cost.toFixed(2) + '</div></div>' +
+                    '<div class="cost-item">' +
+                    '<div class="cost-item-label">材料成本</div>' +
+                    '<div class="cost-item-value">￥' + (costData.material_cost || 0).toFixed(2) + '</div>' +
+                    '</div>' +
+                    '<div class="cost-item">' +
+                    '<div class="cost-item-label">工艺成本</div>' +
+                    '<div class="cost-item-value">￥' + (costData.process_cost || 0).toFixed(2) + '</div>' +
+                    '</div>' +
+                    '<div class="cost-item">' +
+                    '<div class="cost-item-label">包装费</div>' +
+                    '<div class="cost-item-value">￥' + (costData.packaging_cost || 0).toFixed(2) + '</div>' +
+                    '</div>' +
+                    '<div class="cost-item">' +
+                    '<div class="cost-item-label">人工费</div>' +
+                    '<div class="cost-item-value">￥' + (costData.labor_cost || 0).toFixed(2) + '</div>' +
+                    '</div>' +
                     '</div>' +
                     '<div class="total-cost">' +
                     '<div class="cost-item-label">总成本</div>' +
-                    '<div class="total-cost-value">￥' + costData.total_cost.toFixed(2) + '</div>' +
+                    '<div class="total-cost-value">￥' + (costData.total_cost || 0).toFixed(2) + '</div>' +
                     '</div>' +
                     '</div>';
+                
+                // 如果有详细的成本明细，也显示出来
+                if (costData.breakdown && costData.breakdown.length > 0) {
+                    resultsHtml += '<div class="cost-breakdown-details">' +
+                        '<h5><i class="fa fa-list"></i> 成本明细</h5>' +
+                        '<div class="table-responsive">' +
+                        '<table class="table table-striped table-condensed">' +
+                        '<thead><tr><th>项目</th><th>用量</th><th>单价</th><th>小计</th></tr></thead>' +
+                        '<tbody>';
+                    
+                    costData.breakdown.forEach(function(item) {
+                        resultsHtml += '<tr>' +
+                            '<td>' + item.name + '</td>' +
+                            '<td>' + (item.quantity || 0) + ' ' + (item.unit || '') + '</td>' +
+                            '<td>￥' + (item.unit_price || 0).toFixed(2) + '</td>' +
+                            '<td>￥' + (item.subtotal || 0).toFixed(2) + '</td>' +
+                            '</tr>';
+                    });
+                    
+                    resultsHtml += '</tbody></table></div></div>';
+                }
                 
                 $resultsPanel.html(resultsHtml);
             }
         }
     };
+    
     return Controller;
 });
