@@ -1,0 +1,298 @@
+/* BOM模块增强样式 - 与FastAdmin兼容 */
+
+/* 全局BOM模块样式 */
+.bom-module {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* 现代化按钮组增强 */
+.btn-group-modern {
+    display: inline-flex;
+    gap: 5px;
+    margin-right: 10px;
+}
+
+.btn-group-modern .btn {
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 12px;
+    padding: 6px 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-group-modern .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* 渐变按钮样式 */
+.btn-gradient-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    color: white;
+}
+
+.btn-gradient-success {
+    background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+    border: none;
+    color: white;
+}
+
+.btn-gradient-info {
+    background: linear-gradient(45deg, #667eea, #5b9bd5);
+    border: none;
+    color: white;
+}
+
+.btn-gradient-warning {
+    background: linear-gradient(45deg, #f093fb, #f5576c);
+    border: none;
+    color: white;
+}
+
+/* 卡片增强样式 */
+.card-modern {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.card-modern:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+.card-header-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 15px 20px;
+    font-weight: 600;
+}
+
+/* 表格增强样式 */
+.table-modern {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.table-modern thead th {
+    background: #f8f9fa;
+    border: none;
+    font-weight: 600;
+    color: #495057;
+    padding: 15px;
+}
+
+.table-modern tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table-modern tbody tr:hover {
+    background: #f8f9fa;
+    transform: scale(1.01);
+}
+
+/* 树形结构增强 */
+.tree-modern {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.tree-node-modern {
+    padding: 8px 12px;
+    margin: 2px 0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.tree-node-modern:hover {
+    background: #e8f4f8;
+    transform: translateX(5px);
+}
+
+.tree-node-modern.selected {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* 状态标签 */
+.badge-modern {
+    font-weight: 500;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-status-active {
+    background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+    color: white;
+}
+
+.badge-status-inactive {
+    background: linear-gradient(45deg, #bdc3c7, #ecf0f1);
+    color: #7f8c8d;
+}
+
+/* 加载动画增强 */
+.loading-modern {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(102, 126, 234, 0.3);
+    border-radius: 50%;
+    border-top-color: #667eea;
+    animation: spin-modern 1s ease-in-out infinite;
+}
+
+@keyframes spin-modern {
+    to { transform: rotate(360deg); }
+}
+
+/* 表单增强样式 */
+.form-modern .form-group {
+    margin-bottom: 20px;
+}
+
+.form-modern .control-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.form-modern .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.form-modern .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+    .btn-group-modern {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    
+    .btn-group-modern .btn {
+        flex: 1;
+        margin-bottom: 5px;
+    }
+    
+    .card-modern {
+        margin-bottom: 10px;
+    }
+    
+    .tree-node-modern {
+        font-size: 14px;
+    }
+}
+
+/* 打印样式优化 */
+@media print {
+    .btn-group-modern,
+    .loading-modern {
+        display: none !important;
+    }
+    
+    .card-modern {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .tree-modern {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+/* 暗色主题适配 */
+@media (prefers-color-scheme: dark) {
+    .card-modern {
+        background: #2c3e50;
+        color: #ecf0f1;
+    }
+    
+    .tree-modern {
+        background: #34495e;
+        color: #ecf0f1;
+    }
+    
+    .table-modern thead th {
+        background: #34495e;
+        color: #ecf0f1;
+    }
+    
+    .form-modern .form-control {
+        background: #34495e;
+        border-color: #495057;
+        color: #ecf0f1;
+    }
+}
+
+/* 辅助类 */
+.text-gradient {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+}
+
+.shadow-modern {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.border-radius-modern {
+    border-radius: 12px;
+}
+
+.transition-modern {
+    transition: all 0.3s ease;
+}
+
+/* 动画类 */
+.animate-fade-in {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in {
+    animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

@@ -44,24 +44,26 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                          buttons: [
                              {
                                  name: 'bom',
-                                 text: 'BOM管理',
+                                 text: '<i class="fa fa-sitemap"></i> BOM管理',
                                  title: 'BOM管理',
                                  classname: 'btn btn-xs btn-success btn-dialog',
                                  icon: 'fa fa-sitemap',
                                  url: 'bom/product/bom',
+                                 extend: 'data-area=\'["90%","90%"]\' data-full=false',
                                  callback: function (data) {
-                                     Layer.alert("接收到回传数据：" + JSON.stringify(data), {title: "回传数据"});
+                                     Layer.alert("BOM管理操作完成", {title: "操作结果"});
                                  }
                              },
                              {
-                                 name: 'calculate',
-                                 text: '成本计算',
+                                 name: 'calculate', 
+                                 text: '<i class="fa fa-calculator"></i> 成本计算',
                                  title: '成本计算',
                                  classname: 'btn btn-xs btn-info btn-dialog',
                                  icon: 'fa fa-calculator',
                                  url: 'bom/product/calculate',
+                                 extend: 'data-area=\'["90%","90%"]\' data-full=false',
                                  callback: function (data) {
-                                     Layer.alert("计算完成", {title: "成本计算"});
+                                     Layer.alert("成本计算完成", {title: "计算结果"});
                                  }
                              }
                          ],

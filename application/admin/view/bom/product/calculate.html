@@ -8,193 +8,495 @@
     <link rel="stylesheet" href="{:config('site.cdnurl')}/assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="{:config('site.cdnurl')}/assets/css/fastadmin.min.css">
     <style>
-        .cost-summary {
+        /* 现代化成本计算界面样式 */
+        .calc-container {
             background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-            padding: 15px;
+            min-height: calc(100vh - 140px);
+        }
+        
+        .calc-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 0;
+        }
+        
+        .calc-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .param-panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .param-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .param-body {
+            padding: 20px;
+        }
+        
+        .param-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
             margin-bottom: 20px;
         }
+        
+        .param-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .param-item label {
+            font-weight: 500;
+            color: #6c757d;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        
+        .param-item input {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .param-item input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .calc-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .info-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-card h4 i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+        
+        .product-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .spec-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .spec-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .spec-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .cost-summary {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
         .cost-item {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f4;
+            transition: all 0.3s ease;
         }
+        
+        .cost-item:hover {
+            background: #f8f9fa;
+            padding-left: 10px;
+            border-radius: 6px;
+        }
+        
         .cost-item:last-child {
             border-bottom: none;
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1.2em;
             color: #28a745;
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            color: white;
+            padding: 15px 20px;
+            margin: 10px -20px -20px -20px;
+            border-radius: 0 0 12px 12px;
         }
+        
+        .cost-label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .cost-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
         .tree-container {
             max-height: 500px;
             overflow-y: auto;
-            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .cost-tree-node {
+            margin-bottom: 10px;
             padding: 10px;
-            margin-bottom: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
         }
-        .tree-node {
-            margin-left: 20px;
+        
+        .node-header {
+            font-weight: 600;
+            color: #2c3e50;
             margin-bottom: 5px;
         }
-        .tree-node.root {
-            margin-left: 0;
+        
+        .node-cost {
+            color: #28a745;
+            font-weight: bold;
         }
-        .node-info {
-            padding: 5px 10px;
-            background: #f5f5f5;
-            border-radius: 3px;
-            margin-bottom: 5px;
-        }
-        .param-input {
-            width: 120px;
-            display: inline-block;
-        }
-        .calc-button {
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
             margin-top: 20px;
+        }
+        
+        .btn-modern {
+            padding: 12px 24px;
+            font-weight: 600;
+            border-radius: 25px;
+            border: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 13px;
+        }
+        
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-success-modern {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            color: white;
+        }
+        
+        .btn-info-modern {
+            background: linear-gradient(45deg, #667eea, #5b9bd5);
+            color: white;
+        }
+        
+        .btn-default-modern {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            color: #6c757d;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .param-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+            }
+            
+            .product-specs {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+        
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: #667eea;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <i class="fa fa-calculator"></i> BOM成本计算 - {$product.name|default='产品'}
-                    <button type="button" class="close" onclick="parent.Layer.closeAll()">
+    <div class="calc-container">
+        <div class="container-fluid">
+            <!-- 现代化标题栏 -->
+            <div class="calc-header">
+                <h3>
+                    <i class="fa fa-calculator"></i> 
+                    BOM成本计算 - {$product.name|default='产品'}
+                    <button type="button" class="close pull-right" onclick="parent.Layer.closeAll()" style="color: white; opacity: 0.8;">
                         <span>&times;</span>
                     </button>
                 </h3>
+                <p style="margin: 10px 0 0 0; opacity: 0.9; font-size: 14px;">
+                    精准的BOM成本核算，助您制定合理的产品定价策略
+                </p>
             </div>
-            <div class="panel-body">
-                <!-- 计算参数设置 -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <h4>计算参数设置</h4>
-                        <form id="calc-params-form" class="form-inline">
-                            <div class="form-group">
-                                <label>包装费用(元):</label>
-                                <input type="number" class="form-control param-input" name="packaging_cost" value="{$configParams.packaging_cost|default=0}" step="0.01">
+
+            <!-- 计算参数面板 -->
+            <div class="param-panel fade-in">
+                <div class="param-header">
+                    <i class="fa fa-sliders"></i> 计算参数设置
+                </div>
+                <div class="param-body">
+                    <form id="calc-params-form">
+                        <div class="param-grid">
+                            <div class="param-item">
+                                <label>包装费用 (元)</label>
+                                <input type="number" name="packaging_cost" value="{$configParams.packaging_cost|default=0}" step="0.01" placeholder="0.00">
                             </div>
-                            <div class="form-group">
-                                <label>人工费用(元):</label>
-                                <input type="number" class="form-control param-input" name="labor_cost" value="{$configParams.labor_cost|default=0}" step="0.01">
+                            <div class="param-item">
+                                <label>人工费用 (元)</label>
+                                <input type="number" name="labor_cost" value="{$configParams.labor_cost|default=0}" step="0.01" placeholder="0.00">
                             </div>
-                            <div class="form-group">
-                                <label>总损耗率(%):</label>
-                                <input type="number" class="form-control param-input" name="waste_rate" value="{$configParams.waste_rate|default=0}" step="0.01" max="100">
+                            <div class="param-item">
+                                <label>总损耗率 (%)</label>
+                                <input type="number" name="waste_rate" value="{$configParams.waste_rate|default=0}" step="0.01" max="100" placeholder="0.00">
                             </div>
-                            <div class="form-group">
-                                <label>小批量摊销费(元):</label>
-                                <input type="number" class="form-control param-input" name="small_batch_cost" value="{$configParams.small_batch_cost|default=0}" step="0.01">
+                            <div class="param-item">
+                                <label>小批量摊销费 (元)</label>
+                                <input type="number" name="small_batch_cost" value="{$configParams.small_batch_cost|default=0}" step="0.01" placeholder="0.00">
                             </div>
-                            <button type="button" class="btn btn-primary calc-button" onclick="calculateCost()">
-                                <i class="fa fa-calculator"></i> 重新计算
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn calc-btn" onclick="calculateCost()">
+                                <i class="fa fa-calculator"></i> 重新计算成本
                             </button>
-                        </form>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- 产品信息卡片 -->
+                <div class="col-md-6">
+                    <div class="info-card fade-in">
+                        <h4>
+                            <i class="fa fa-cube"></i>
+                            产品基础信息
+                        </h4>
+                        <div class="product-info">
+                            <div class="form-group">
+                                <label class="control-label">产品名称:</label>
+                                <p class="form-control-static"><strong>{$product.name|default='未知'}</strong></p>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">产品描述:</label>
+                                <p class="form-control-static">{$product.description|default='无描述'}</p>
+                            </div>
+                        </div>
+                        <div class="product-specs">
+                            <div class="spec-item">
+                                <div class="spec-value">{$product.resolved_l|default=0|number_format:2}</div>
+                                <div class="spec-label">长度 (CM)</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-value">{$product.resolved_w|default=0|number_format:2}</div>
+                                <div class="spec-label">宽度 (CM)</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-value">{$product.resolved_h|default=0|number_format:2}</div>
+                                <div class="spec-label">高度 (CM)</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <hr>
-
-                <!-- 产品基础信息 -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4>产品信息</h4>
-                        <table class="table table-striped table-condensed">
-                            <tbody>
-                                <tr>
-                                    <td>产品名称:</td>
-                                    <td>{$product.name|default='未知'}</td>
-                                </tr>
-                                <tr>
-                                    <td>解析后尺寸:</td>
-                                    <td>
-                                        L: {$product.resolved_l|default=0|number_format:2}cm, 
-                                        W: {$product.resolved_w|default=0|number_format:2}cm, 
-                                        H: {$product.resolved_h|default=0|number_format:2}cm
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <h4>成本汇总</h4>
+                <!-- 成本汇总卡片 -->
+                <div class="col-md-6">
+                    <div class="info-card fade-in">
+                        <h4>
+                            <i class="fa fa-money"></i>
+                            成本汇总分析
+                        </h4>
                         <div class="cost-summary">
                             <div class="cost-item">
-                                <span>材料成本:</span>
-                                <span>¥{$costSummary.material_cost|default=0|number_format:2}</span>
+                                <span class="cost-label">材料成本:</span>
+                                <span class="cost-value">¥{$costSummary.material_cost|default=0|number_format:2}</span>
                             </div>
                             <div class="cost-item">
-                                <span>工艺成本:</span>
-                                <span>¥{$costSummary.process_cost|default=0|number_format:2}</span>
+                                <span class="cost-label">工艺成本:</span>
+                                <span class="cost-value">¥{$costSummary.process_cost|default=0|number_format:2}</span>
                             </div>
                             <div class="cost-item">
-                                <span>BOM总成本:</span>
-                                <span>¥{$costSummary.total_bom_cost|default=0|number_format:2}</span>
+                                <span class="cost-label">BOM总成本:</span>
+                                <span class="cost-value">¥{$costSummary.total_bom_cost|default=0|number_format:2}</span>
                             </div>
                             <div class="cost-item">
-                                <span>损耗金额({$costSummary.waste_rate|default=0}%):</span>
-                                <span>¥{$costSummary.waste_amount|default=0|number_format:2}</span>
+                                <span class="cost-label">损耗金额 ({$costSummary.waste_rate|default=0}%):</span>
+                                <span class="cost-value">¥{$costSummary.waste_amount|default=0|number_format:2}</span>
                             </div>
                             <div class="cost-item">
-                                <span>包装费用:</span>
-                                <span>¥{$costSummary.packaging_cost|default=0|number_format:2}</span>
+                                <span class="cost-label">包装费用:</span>
+                                <span class="cost-value">¥{$costSummary.packaging_cost|default=0|number_format:2}</span>
                             </div>
                             <div class="cost-item">
-                                <span>人工费用:</span>
-                                <span>¥{$costSummary.labor_cost|default=0|number_format:2}</span>
+                                <span class="cost-label">人工费用:</span>
+                                <span class="cost-value">¥{$costSummary.labor_cost|default=0|number_format:2}</span>
                             </div>
                             <div class="cost-item">
-                                <span>小批量摊销:</span>
-                                <span>¥{$costSummary.small_batch_cost|default=0|number_format:2}</span>
+                                <span class="cost-label">小批量摊销:</span>
+                                <span class="cost-value">¥{$costSummary.small_batch_cost|default=0|number_format:2}</span>
                             </div>
                             <div class="cost-item">
-                                <span>最终总成本:</span>
-                                <span>¥{$costSummary.total_cost|default=0|number_format:2}</span>
+                                <span class="cost-label">
+                                    <i class="fa fa-trophy"></i> 最终总成本:
+                                </span>
+                                <span class="cost-value">¥{$costSummary.total_cost|default=0|number_format:2}</span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <hr>
-
-                <!-- 成本明细展开 -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <h4>成本明细</h4>
-                        <div class="tree-container">
-                            <div id="cost-breakdown">
-                                {if isset($costSummary.cost_breakdown) && !empty($costSummary.cost_breakdown)}
-                                    {foreach $costSummary.cost_breakdown as $item}
-                                        {include file="bom/product/cost_breakdown_item" item=$item level=0}
-                                    {/foreach}
-                                {else}
-                                    <p class="text-muted">暂无成本明细数据</p>
-                                {/if}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 操作按钮 -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <button type="button" class="btn btn-success" onclick="exportCostReport()">
-                                <i class="fa fa-download"></i> 导出成本报告
-                            </button>
-                            <button type="button" class="btn btn-info" onclick="saveCostResult()">
-                                <i class="fa fa-save"></i> 保存计算结果
-                            </button>
-                            <button type="button" class="btn btn-default" onclick="parent.Layer.closeAll()">
-                                <i class="fa fa-close"></i> 关闭
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- 成本明细展开 -->
+            <div class="info-card fade-in">
+                <h4>
+                    <i class="fa fa-list-alt"></i>
+                    详细成本明细
+                </h4>
+                <div class="tree-container">
+                    <div id="cost-breakdown">
+                        {if isset($costSummary.cost_breakdown) && !empty($costSummary.cost_breakdown)}
+                            {foreach $costSummary.cost_breakdown as $item}
+                                <div class="cost-tree-node">
+                                    <div class="node-header">
+                                        <i class="fa fa-cube text-primary"></i>
+                                        {$item.name|default='未知节点'}
+                                        <span class="node-cost pull-right">¥{$item.total_cost|default=0|number_format:2}</span>
+                                    </div>
+                                    {if isset($item.children)}
+                                        {include file="bom/product/cost_breakdown_item" item=$item level=1}
+                                    {/if}
+                                </div>
+                            {/foreach}
+                        {else}
+                            <div class="text-center text-muted" style="padding: 40px;">
+                                <i class="fa fa-info-circle fa-2x"></i>
+                                <p style="margin-top: 15px;">暂无成本明细数据</p>
+                                <p><small>请检查BOM结构是否完整或重新执行成本计算</small></p>
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="action-buttons fade-in">
+                <button type="button" class="btn btn-modern btn-success-modern" onclick="exportCostReport()">
+                    <i class="fa fa-download"></i> 导出成本报告
+                </button>
+                <button type="button" class="btn btn-modern btn-info-modern" onclick="saveCostResult()">
+                    <i class="fa fa-save"></i> 保存计算结果
+                </button>
+                <button type="button" class="btn btn-modern btn-default-modern" onclick="parent.Layer.closeAll()">
+                    <i class="fa fa-close"></i> 关闭窗口
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>正在计算成本，请稍候...</p>
         </div>
     </div>
 
@@ -203,59 +505,188 @@
     <script src="{:config('site.cdnurl')}/assets/js/fastadmin.min.js"></script>
     
     <script>
-        // 重新计算成本
-        function calculateCost() {
-            var formData = $('#calc-params-form').serialize();
-            var productId = {$product.id|default=0};
+        // 现代化成本计算管理器
+        var CostCalculator = {
+            productId: {$product.id|default=0},
             
-            $.ajax({
-                url: 'bom/product/calculate/ids/' + productId,
-                type: 'GET',
-                data: formData,
-                dataType: 'json',
-                success: function(ret) {
-                    if (ret.code === 1) {
-                        Toastr.success(ret.msg);
-                        // 重新加载页面或更新数据
-                        window.location.reload();
-                    } else {
-                        Toastr.error(ret.msg);
+            // 重新计算成本
+            calculateCost: function() {
+                var formData = $('#calc-params-form').serialize();
+                
+                // 显示加载遮罩
+                $('#loading-overlay').show();
+                
+                $.ajax({
+                    url: 'bom/product/calculate/ids/' + this.productId,
+                    type: 'GET',
+                    data: formData,
+                    dataType: 'json',
+                    timeout: 30000, // 30秒超时
+                    success: function(ret) {
+                        $('#loading-overlay').hide();
+                        if (ret.code === 1) {
+                            Toastr.success(ret.msg);
+                            // 重新加载页面或更新数据
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            Toastr.error(ret.msg);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#loading-overlay').hide();
+                        if (status === 'timeout') {
+                            Toastr.error('计算超时，请检查BOM结构复杂度');
+                        } else {
+                            Toastr.error('计算失败，请重试');
+                        }
                     }
-                },
-                error: function() {
-                    Toastr.error('计算失败，请重试');
-                }
-            });
-        }
-
-        // 导出成本报告
-        function exportCostReport() {
-            var productId = {$product.id|default=0};
-            window.open('bom/product/exportCostReport/ids/' + productId);
-        }
-
-        // 保存计算结果
-        function saveCostResult() {
-            var productId = {$product.id|default=0};
-            var formData = $('#calc-params-form').serialize();
+                });
+            },
             
-            $.ajax({
-                url: 'bom/product/saveCostResult/ids/' + productId,
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                success: function(ret) {
-                    if (ret.code === 1) {
-                        Toastr.success(ret.msg);
-                    } else {
-                        Toastr.error(ret.msg);
+            // 导出成本报告
+            exportCostReport: function() {
+                var formData = $('#calc-params-form').serialize();
+                var url = 'bom/product/exportCostReport/ids/' + this.productId + '?' + formData;
+                
+                // 创建下载链接
+                var link = document.createElement('a');
+                link.href = url;
+                link.target = '_blank';
+                link.download = '成本报告.xlsx';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                Toastr.success('正在生成成本报告...');
+            },
+            
+            // 保存计算结果
+            saveCostResult: function() {
+                var formData = $('#calc-params-form').serialize();
+                
+                $.ajax({
+                    url: 'bom/product/saveCostResult/ids/' + this.productId,
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(ret) {
+                        if (ret.code === 1) {
+                            Toastr.success(ret.msg);
+                        } else {
+                            Toastr.error(ret.msg);
+                        }
+                    },
+                    error: function() {
+                        Toastr.error('保存失败，请重试');
                     }
-                },
-                error: function() {
-                    Toastr.error('保存失败，请重试');
+                });
+            },
+            
+            // 参数验证
+            validateParams: function() {
+                var isValid = true;
+                var errors = [];
+                
+                // 验证损耗率
+                var wasteRate = parseFloat($('input[name="waste_rate"]').val()) || 0;
+                if (wasteRate < 0 || wasteRate > 100) {
+                    errors.push('损耗率必须在 0-100% 之间');
+                    isValid = false;
                 }
-            });
-        }
+                
+                // 验证费用为非负数
+                $('input[type="number"]').each(function() {
+                    if ($(this).attr('name') !== 'waste_rate') {
+                        var value = parseFloat($(this).val()) || 0;
+                        if (value < 0) {
+                            errors.push($(this).prev('label').text() + '不能为负数');
+                            isValid = false;
+                        }
+                    }
+                });
+                
+                if (!isValid) {
+                    Toastr.error('参数验证失败：<br>' + errors.join('<br>'));
+                }
+                
+                return isValid;
+            },
+            
+            // 初始化
+            init: function() {
+                var self = this;
+                
+                // 参数输入实时验证
+                $('input[type="number"]').on('blur', function() {
+                    self.validateParams();
+                });
+                
+                // 参数变化提示
+                $('#calc-params-form input').on('change', function() {
+                    if (!$('#recalc-hint').length) {
+                        $('.param-body').append('<div id="recalc-hint" class="alert alert-info" style="margin-top: 15px;"><i class="fa fa-info-circle"></i> 参数已修改，请点击"重新计算成本"更新结果</div>');
+                    }
+                });
+                
+                // 添加动画效果
+                $('.fade-in').each(function(index) {
+                    $(this).css({
+                        'animation-delay': (index * 0.1) + 's'
+                    });
+                });
+                
+                // 工具提示
+                $('[title]').tooltip();
+                
+                // 键盘快捷键
+                $(document).keydown(function(e) {
+                    // Ctrl + Enter 计算成本
+                    if (e.ctrlKey && e.keyCode === 13) {
+                        e.preventDefault();
+                        self.calculateCost();
+                    }
+                    // Ctrl + S 保存结果
+                    if (e.ctrlKey && e.keyCode === 83) {
+                        e.preventDefault();
+                        self.saveCostResult();
+                    }
+                });
+            }
+        };
+        
+        // 全局函数定义
+        window.calculateCost = function() {
+            if (CostCalculator.validateParams()) {
+                CostCalculator.calculateCost();
+            }
+        };
+        
+        window.exportCostReport = function() {
+            CostCalculator.exportCostReport();
+        };
+        
+        window.saveCostResult = function() {
+            CostCalculator.saveCostResult();
+        };
+        
+        // 页面加载完成后初始化
+        $(document).ready(function() {
+            CostCalculator.init();
+            
+            // 显示快捷键提示
+            setTimeout(function() {
+                if (!localStorage.getItem('hideShortcutTip')) {
+                    Toastr.info('快捷键提示：Ctrl+Enter 重新计算，Ctrl+S 保存结果', '使用技巧', {
+                        timeOut: 8000,
+                        onclick: function() {
+                            localStorage.setItem('hideShortcutTip', 'true');
+                        }
+                    });
+                }
+            }, 2000);
+        });
     </script>
 </body>
 </html>

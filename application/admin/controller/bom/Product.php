@@ -300,7 +300,7 @@ class Product extends Backend
     }
 
     /**
-     * 构建BOM树形数据
+     * 构建BOM树形数据（兼容jsTree格式）
      */
     private function buildBomTreeData($product)
     {
@@ -308,6 +308,8 @@ class Product extends Backend
             'id' => 'product_' . $product->id,
             'text' => $product->name . ' (产品)',
             'type' => 'product',
+            'state' => ['opened' => true],
+            'li_attr' => ['data-type' => 'product', 'data-id' => $product->id],
             'data' => [
                 'id' => $product->id,
                 'name' => $product->name,
@@ -329,14 +331,16 @@ class Product extends Backend
     }
 
     /**
-     * 构建部件树形数据
+     * 构建部件树形数据（兼容jsTree格式）
      */
     private function buildComponentTreeData($component)
     {
         $node = [
             'id' => 'component_' . $component->id,
-            'text' => $component->name . ' (部件)',
-            'type' => 'component',  
+            'text' => $component->name . ' (部件) x' . $component->quantity_per_parent,
+            'type' => 'component',
+            'state' => ['opened' => true],
+            'li_attr' => ['data-type' => 'component', 'data-id' => $component->id],
             'data' => [
                 'id' => $component->id,
                 'name' => $component->name,
@@ -356,6 +360,7 @@ class Product extends Backend
                     'id' => 'material_' . $materialUsage->id,
                     'text' => $materialUsage->getDisplayName() . ' (材料)',
                     'type' => 'material',
+                    'li_attr' => ['data-type' => 'material', 'data-id' => $materialUsage->id],
                     'data' => [
                         'id' => $materialUsage->id,
                         'name' => $materialUsage->getDisplayName(),
@@ -376,6 +381,7 @@ class Product extends Backend
                     'id' => 'process_' . $processAssignment->id,
                     'text' => $processAssignment->getDisplayName() . ' (工艺)',
                     'type' => 'process',
+                    'li_attr' => ['data-type' => 'process', 'data-id' => $processAssignment->id],
                     'data' => [
                         'id' => $processAssignment->id,
                         'name' => $processAssignment->getDisplayName(),
@@ -395,5 +401,93 @@ class Product extends Backend
         }
 
         return $node;
+    }
+
+    /**
+     * 移动节点位置
+     */
+    public function moveNode()
+    {
+        if (!$this->request->isAjax()) {
+            $this->error('非法请求');
+        }
+
+        $nodeId = $this->request->post('node_id');
+        $nodeType = $this->request->post('node_type');
+        $parentId = $this->request->post('parent_id');
+        $position = $this->request->post('position', 0);
+
+        try {
+            // 根据节点类型处理移动逻辑
+            switch($nodeType) {
+                case 'component':
+                    $component = \app\admin\model\Component::get($nodeId);
+                    if ($component) {
+                        $component->parent_component_id = $parentId;
+                        $component->sequence = $position;
+                        $component->save();
+                    }
+                    break;
+                case 'material':
+                    // 材料节点移动逻辑
+                    break;
+                case 'process':
+                    // 工艺节点移动逻辑
+                    break;
+            }
+
+            $this->success('节点移动成功');
+        } catch (\Exception $e) {
+            $this->error('移动失败: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 复制节点
+     */
+    public function duplicateNode()
+    {
+        if (!$this->request->isAjax()) {
+            $this->error('非法请求');
+        }
+
+        $nodeType = $this->request->post('node_type');
+        $nodeId = $this->request->post('node_id');
+
+        try {
+            switch($nodeType) {
+                case 'component':
+                    $original = \app\admin\model\Component::get($nodeId);
+                    if ($original) {
+                        $duplicate = $original->toArray();
+                        unset($duplicate['id']);
+                        $duplicate['name'] = $duplicate['name'] . ' (副本)';
+                        $duplicate['createtime'] = time();
+                        $duplicate['updatetime'] = time();
+                        
+                        \app\admin\model\Component::create($duplicate);
+                        $this->success('部件复制成功');
+                    }
+                    break;
+                // 其他类型的复制逻辑...
+            }
+        } catch (\Exception $e) {
+            $this->error('复制失败: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 导出BOM
+     */
+    public function exportBom($ids = null)
+    {
+        $row = $this->model->get($ids);
+        if (!$row) {
+            $this->error(__('No Results were found'));
+        }
+
+        // 这里可以实现BOM导出逻辑
+        // 比如导出Excel、PDF等格式
+        $this->success('导出功能开发中...');
     }
 }

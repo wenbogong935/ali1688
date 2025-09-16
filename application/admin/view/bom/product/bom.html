@@ -9,53 +9,256 @@
     <link rel="stylesheet" href="{:config('site.cdnurl')}/assets/css/fastadmin.min.css">
     <link rel="stylesheet" href="{:config('site.cdnurl')}/assets/libs/ztree/css/zTreeStyle/zTreeStyle.css">
     <style>
+        /* 现代化BOM管理界面样式 */
         .bom-container {
             display: flex;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 140px);
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+        
         .bom-tree {
-            width: 40%;
-            border-right: 1px solid #ddd;
-            padding-right: 15px;
-            overflow-y: auto;
+            width: 45%;
+            background: white;
+            border-right: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
         }
+        
         .bom-detail {
-            width: 60%;
-            padding-left: 15px;
+            width: 55%;
+            background: white;
+            display: flex;
+            flex-direction: column;
         }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-header i {
+            margin-right: 8px;
+        }
+        
         .tree-container {
-            height: 100%;
-            border: 1px solid #ddd;
-            padding: 10px;
-            overflow-y: auto;
-        }
-        .detail-panel {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        .detail-header {
-            background: #f5f5f5;
-            padding: 10px 15px;
-            border-bottom: 1px solid #ddd;
-            font-weight: bold;
-        }
-        .detail-body {
+            flex: 1;
             padding: 15px;
+            overflow-y: auto;
+            background: #fafbfc;
         }
+        
+        .tree-search {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .tree-search input {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 13px;
+        }
+        
+        .detail-panel {
+            border: none;
+            border-radius: 8px;
+            margin: 15px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+        }
+        
+        .detail-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .detail-body {
+            padding: 20px;
+        }
+        
         .form-horizontal .form-group {
-            margin-bottom: 10px;
-        }
-        .btn-toolbar {
             margin-bottom: 15px;
         }
-        .node-buttons {
-            margin-left: 10px;
+        
+        .btn-toolbar {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 0;
         }
-        .node-buttons .btn {
-            padding: 2px 8px;
-            font-size: 11px;
-            margin-left: 3px;
+        
+        .btn-group {
+            margin-right: 10px;
+        }
+        
+        .btn-modern {
+            border-radius: 25px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn-modern:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn-modern.btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+        
+        .btn-modern.btn-success {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+        }
+        
+        .btn-modern.btn-info {
+            background: linear-gradient(45deg, #667eea, #5b9bd5);
+        }
+        
+        .btn-modern.btn-warning {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+        
+        .btn-modern.btn-default {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            color: #6c757d;
+        }
+        
+        /* 增强的jsTree样式 */
+        .jstree-default .jstree-node {
+            margin: 2px 0;
+        }
+        
+        .jstree-default .jstree-anchor {
+            border-radius: 6px;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+        
+        .jstree-default .jstree-anchor:hover {
+            background: #e8f4f8 !important;
+            color: #2c3e50 !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .jstree-default .jstree-clicked {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            color: white !important;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .jstree-default .jstree-node[data-type="product"] > .jstree-anchor {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .jstree-default .jstree-node[data-type="component"] > .jstree-anchor {
+            color: #3498db;
+        }
+        
+        .jstree-default .jstree-node[data-type="material"] > .jstree-anchor {
+            color: #e74c3c;
+        }
+        
+        .jstree-default .jstree-node[data-type="process"] > .jstree-anchor {
+            color: #f39c12;
+        }
+        
+        /* 节点图标美化 */
+        .jstree-default .jstree-node[data-type="product"] > .jstree-anchor > .jstree-icon {
+            background-image: none;
+            position: relative;
+        }
+        
+        .jstree-default .jstree-node[data-type="product"] > .jstree-anchor > .jstree-icon:before {
+            content: "\f1b2";
+            font-family: "FontAwesome";
+            color: #2c3e50;
+        }
+        
+        .jstree-default .jstree-node[data-type="component"] > .jstree-anchor > .jstree-icon:before {
+            content: "\f1b3";
+            font-family: "FontAwesome";
+            color: #3498db;
+        }
+        
+        .jstree-default .jstree-node[data-type="material"] > .jstree-anchor > .jstree-icon:before {
+            content: "\f140";
+            font-family: "FontAwesome";
+            color: #e74c3c;
+        }
+        
+        .jstree-default .jstree-node[data-type="process"] > .jstree-anchor > .jstree-icon:before {
+            content: "\f085";
+            font-family: "FontAwesome";
+            color: #f39c12;
+        }
+        
+        /* 响应式适配 */
+        @media (max-width: 992px) {
+            .bom-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .bom-tree, .bom-detail {
+                width: 100%;
+            }
+            
+            .bom-tree {
+                height: 400px;
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+        }
+        
+        /* 加载动画 */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -71,96 +274,171 @@
                 </h3>
             </div>
             <div class="panel-body">
-                <!-- 工具栏 -->
+                <!-- 现代化工具栏 -->
                 <div class="btn-toolbar">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary" onclick="addComponent()">
+                        <button type="button" class="btn btn-modern btn-primary" onclick="addComponent()" title="添加部件">
                             <i class="fa fa-plus"></i> 添加部件
                         </button>
-                        <button type="button" class="btn btn-success" onclick="addMaterial()">
+                        <button type="button" class="btn btn-modern btn-success" onclick="addMaterial()" title="添加材料">
                             <i class="fa fa-plus-circle"></i> 添加材料
                         </button>
-                        <button type="button" class="btn btn-info" onclick="addProcess()">
+                        <button type="button" class="btn btn-modern btn-info" onclick="addProcess()" title="添加工艺">
                             <i class="fa fa-cog"></i> 添加工艺
                         </button>
                     </div>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-warning" onclick="expandAll()">
+                        <button type="button" class="btn btn-modern btn-warning" onclick="expandAll()" title="展开全部">
                             <i class="fa fa-expand"></i> 展开全部
                         </button>
-                        <button type="button" class="btn btn-default" onclick="collapseAll()">
+                        <button type="button" class="btn btn-modern btn-default" onclick="collapseAll()" title="折叠全部">
                             <i class="fa fa-compress"></i> 折叠全部
+                        </button>
+                        <button type="button" class="btn btn-modern btn-default" onclick="refreshTree()" title="刷新树">
+                            <i class="fa fa-refresh"></i> 刷新
                         </button>
                     </div>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-success" onclick="saveBomData()">
+                        <button type="button" class="btn btn-modern btn-success" onclick="saveBomData()" title="保存BOM">
                             <i class="fa fa-save"></i> 保存BOM
+                        </button>
+                        <button type="button" class="btn btn-modern btn-info" onclick="exportBom()" title="导出BOM">
+                            <i class="fa fa-download"></i> 导出
                         </button>
                     </div>
                 </div>
 
-                <!-- BOM主体 -->
+                <!-- 现代化BOM主体 -->
                 <div class="bom-container">
-                    <!-- BOM树 -->
+                    <!-- 增强的BOM树 -->
                     <div class="bom-tree">
-                        <h4>BOM结构树</h4>
-                        <div class="tree-container">
-                            <ul id="bomTree" class="ztree"></ul>
+                        <div class="section-header">
+                            <span>
+                                <i class="fa fa-sitemap"></i>
+                                BOM结构树
+                            </span>
+                            <div>
+                                <button type="button" class="btn btn-xs btn-default" onclick="refreshTree()" title="刷新">
+                                    <i class="fa fa-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="tree-search">
+                            <input type="text" id="tree-search" placeholder="搜索节点..." onkeyup="searchTree(this.value)">
+                        </div>
+                        <div class="tree-container" style="position: relative;">
+                            <div class="loading-overlay" id="tree-loading" style="display: none;">
+                                <div class="loading-spinner"></div>
+                            </div>
+                            <div id="bomTree"></div>
                         </div>
                     </div>
                     
-                    <!-- 详情面板 -->
+                    <!-- 增强的详情面板 -->
                     <div class="bom-detail">
-                        <div id="detail-content">
-                            <!-- 产品信息 -->
+                        <div class="section-header">
+                            <span>
+                                <i class="fa fa-info-circle"></i>
+                                节点详情
+                            </span>
+                            <div id="detail-toolbar" style="display: none;">
+                                <button type="button" class="btn btn-xs btn-primary" onclick="editNode()" title="编辑">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-xs btn-danger" onclick="deleteNode()" title="删除">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                                <button type="button" class="btn btn-xs btn-success" onclick="duplicateNode()" title="复制">
+                                    <i class="fa fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="detail-content" style="flex: 1; overflow-y: auto;">
+                            <!-- 产品基础信息面板 -->
                             <div class="detail-panel" id="product-panel">
-                                <div class="detail-header">产品信息</div>
+                                <div class="detail-header">
+                                    <span>
+                                        <i class="fa fa-cube"></i>
+                                        产品信息
+                                    </span>
+                                </div>
                                 <div class="detail-body">
                                     <form class="form-horizontal">
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">产品名称:</label>
                                             <div class="col-sm-9">
-                                                <p class="form-control-static">{$row.name|default=''}</p>
+                                                <p class="form-control-static"><strong>{$row.name|default=''}</strong></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">产品描述:</label>
+                                            <div class="col-sm-9">
+                                                <p class="form-control-static">{$row.description|default='无描述'}</p>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">长度公式:</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" value="{$row.length_formula|default=''}" data-field="length_formula">
+                                                <input type="text" class="form-control" value="{$row.length_formula|default=''}" data-field="length_formula" placeholder="如：297 或 =L*0.8">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">宽度公式:</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" value="{$row.width_formula|default=''}" data-field="width_formula">
+                                                <input type="text" class="form-control" value="{$row.width_formula|default=''}" data-field="width_formula" placeholder="如：210 或 =W*0.6">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">高度公式:</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" value="{$row.height_formula|default=''}" data-field="height_formula">
+                                                <input type="text" class="form-control" value="{$row.height_formula|default=''}" data-field="height_formula" placeholder="如：30 或 =H+10">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-3 col-sm-9">
+                                                <button type="button" class="btn btn-sm btn-primary" onclick="updateProductInfo()">
+                                                    <i class="fa fa-save"></i> 更新产品信息
+                                                </button>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                             
-                            <!-- 动态详情面板 -->
+                            <!-- 动态节点详情面板 -->
                             <div class="detail-panel" id="node-panel" style="display: none;">
                                 <div class="detail-header">
-                                    <span id="node-title">节点详情</span>
-                                    <div class="pull-right">
-                                        <button type="button" class="btn btn-xs btn-primary" onclick="editNode()">
-                                            <i class="fa fa-edit"></i> 编辑
-                                        </button>
-                                        <button type="button" class="btn btn-xs btn-danger" onclick="deleteNode()">
-                                            <i class="fa fa-trash"></i> 删除
-                                        </button>
-                                    </div>
-                                    <div class="clearfix"></div>
+                                    <span id="node-title">
+                                        <i class="fa fa-cube"></i>
+                                        节点详情
+                                    </span>
                                 </div>
                                 <div class="detail-body" id="node-detail-body">
                                     <!-- 动态内容 -->
+                                </div>
+                            </div>
+                            
+                            <!-- 快速操作面板 -->
+                            <div class="detail-panel" id="quick-actions-panel" style="display: none;">
+                                <div class="detail-header">
+                                    <span>
+                                        <i class="fa fa-flash"></i>
+                                        快速操作
+                                    </span>
+                                </div>
+                                <div class="detail-body">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <button type="button" class="btn btn-block btn-info" onclick="calculateNodeCost()">
+                                                <i class="fa fa-calculator"></i> 计算成本
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <button type="button" class="btn btn-block btn-warning" onclick="validateNode()">
+                                                <i class="fa fa-check"></i> 数据验证
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -173,323 +451,656 @@
     <script src="{:config('site.cdnurl')}/assets/js/jquery.min.js"></script>
     <script src="{:config('site.cdnurl')}/assets/js/bootstrap.min.js"></script>
     <script src="{:config('site.cdnurl')}/assets/js/fastadmin.min.js"></script>
-    <script src="{:config('site.cdnurl')}/assets/libs/ztree/js/jquery.ztree.all.min.js"></script>
+    <script src="{:config('site.cdnurl')}/assets/js/require.min.js"></script>
     
     <script>
-        var productId = {$row.id|default=0};
-        var bomTree;
-        var selectedNode = null;
-        
-        // zTree配置
-        var setting = {
-            data: {
-                simpleData: {
-                    enable: true,
-                    idKey: "id",
-                    pIdKey: "pId"
-                }
-            },
-            callback: {
-                onClick: onNodeClick,
-                onRightClick: onNodeRightClick
-            },
-            edit: {
-                enable: true,
-                showRemoveBtn: true,
-                showRenameBtn: false
-            }
-        };
-
-        $(document).ready(function() {
-            // 初始化BOM树
-            loadBomTree();
-        });
-
-        // 加载BOM树数据
-        function loadBomTree() {
-            $.ajax({
-                url: 'bom/product/getBomTree/ids/' + productId,
-                type: 'GET',
-                dataType: 'json',
-                success: function(ret) {
-                    if (ret.code === 1) {
-                        var treeData = convertToZTreeData(ret.data);
-                        bomTree = $.fn.zTree.init($("#bomTree"), setting, treeData);
-                        bomTree.expandAll(true);
-                    } else {
-                        Toastr.error(ret.msg);
-                    }
-                },
-                error: function() {
-                    Toastr.error('加载BOM树失败');
-                }
-            });
-        }
-
-        // 转换数据格式为zTree格式
-        function convertToZTreeData(data) {
-            var result = [];
-            
-            function convertNode(node, parentId) {
-                var zNode = {
-                    id: node.id,
-                    pId: parentId,
-                    name: node.text,
-                    type: node.type,
-                    data: node.data
-                };
-                result.push(zNode);
+        require(['jstree'], function() {
+            // BOM管理增强版
+            var BOMManager = {
+                productId: {$row.id|default=0},
+                selectedNode: null,
+                treeInstance: null,
+                searchTimeout: null,
                 
-                if (node.children && node.children.length > 0) {
-                    for (var i = 0; i < node.children.length; i++) {
-                        convertNode(node.children[i], node.id);
+                // 初始化
+                init: function() {
+                    this.initTree();
+                    this.bindEvents();
+                },
+                
+                // 初始化树
+                initTree: function() {
+                    var self = this;
+                    
+                    $('#bomTree').jstree({
+                        'core': {
+                            'data': {
+                                'url': 'bom/product/getBomTree/ids/' + this.productId,
+                                'dataType': 'json',
+                                'data': function(node) {
+                                    return {'id': node.id};
+                                }
+                            },
+                            'check_callback': true,
+                            'themes': {
+                                'name': 'default',
+                                'responsive': true,
+                                'variant': 'small',
+                                'stripes': true
+                            }
+                        },
+                        'types': {
+                            'product': {
+                                'icon': 'fa fa-cube text-primary'
+                            },
+                            'component': {
+                                'icon': 'fa fa-cubes text-info'
+                            },
+                            'material': {
+                                'icon': 'fa fa-square text-danger'
+                            },
+                            'process': {
+                                'icon': 'fa fa-cog text-warning'
+                            }
+                        },
+                        'search': {
+                            'case_insensitive': true,
+                            'show_only_matches': true,
+                            'show_only_matches_children': true
+                        },
+                        'contextmenu': {
+                            'items': this.getContextMenu
+                        },
+                        'plugins': ['types', 'search', 'contextmenu', 'dnd', 'state', 'wholerow']
+                    }).on('ready.jstree', function() {
+                        self.treeInstance = $(this).jstree(true);
+                        $('#tree-loading').hide();
+                        self.treeInstance.open_all();
+                    }).on('select_node.jstree', function(e, data) {
+                        self.onNodeSelect(data.node);
+                    }).on('deselect_node.jstree', function(e, data) {
+                        self.onNodeDeselect();
+                    }).on('move_node.jstree', function(e, data) {
+                        self.onNodeMove(data);
+                    });
+                },
+                
+                // 转换服务器数据格式
+                transformData: function(serverData) {
+                    var self = this;
+                    
+                    function convertNode(node) {
+                        var result = {
+                            id: node.id,
+                            text: node.text,
+                            type: node.type,
+                            data: node.data,
+                            children: []
+                        };
+                        
+                        // 设置节点属性
+                        result.li_attr = {
+                            'data-type': node.type,
+                            'data-id': node.data.id
+                        };
+                        
+                        // 处理子节点
+                        if (node.children && node.children.length > 0) {
+                            result.children = node.children.map(convertNode);
+                        }
+                        
+                        return result;
                     }
-                }
-            }
-            
-            convertNode(data, null);
-            return result;
-        }
-
-        // 节点点击事件
-        function onNodeClick(event, treeId, treeNode) {
-            selectedNode = treeNode;
-            showNodeDetail(treeNode);
-        }
-
-        // 节点右键事件
-        function onNodeRightClick(event, treeId, treeNode) {
-            // 这里可以添加右键菜单
-        }
-
-        // 显示节点详情
-        function showNodeDetail(node) {
-            $('#node-panel').show();
-            $('#node-title').text(node.name + ' (' + getNodeTypeText(node.type) + ')');
-            
-            var detailHtml = generateDetailHtml(node);
-            $('#node-detail-body').html(detailHtml);
-        }
-
-        // 获取节点类型文本
-        function getNodeTypeText(type) {
-            switch(type) {
-                case 'product': return '产品';
-                case 'component': return '部件';
-                case 'material': return '材料';
-                case 'process': return '工艺';
-                default: return '未知';
-            }
-        }
-
-        // 生成详情HTML
-        function generateDetailHtml(node) {
-            var html = '<form class="form-horizontal">';
-            var data = node.data;
-            
-            switch(node.type) {
-                case 'component':
+                    
+                    return convertNode(serverData);
+                },
+                
+                // 节点选中事件
+                onNodeSelect: function(node) {
+                    this.selectedNode = node;
+                    this.showNodeDetail(node);
+                    $('#detail-toolbar').show();
+                    $('#quick-actions-panel').show();
+                },
+                
+                // 节点取消选中事件
+                onNodeDeselect: function() {
+                    this.selectedNode = null;
+                    $('#node-panel').hide();
+                    $('#detail-toolbar').hide();
+                    $('#quick-actions-panel').hide();
+                },
+                
+                // 节点移动事件
+                onNodeMove: function(data) {
+                    var self = this;
+                    
+                    // 构建移动数据
+                    var moveData = {
+                        node_id: data.node.data.id,
+                        node_type: data.node.data.type,
+                        parent_id: data.parent === '#' ? null : data.parent,
+                        position: data.position
+                    };
+                    
+                    // 发送到服务器
+                    $.ajax({
+                        url: 'bom/product/moveNode',
+                        type: 'POST',
+                        data: moveData,
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.code === 1) {
+                                Toastr.success('节点移动成功');
+                            } else {
+                                Toastr.error(ret.msg);
+                                self.refreshTree();
+                            }
+                        },
+                        error: function() {
+                            Toastr.error('节点移动失败');
+                            self.refreshTree();
+                        }
+                    });
+                },
+                
+                // 显示节点详情
+                showNodeDetail: function(node) {
+                    $('#node-panel').show();
+                    
+                    var icon = this.getTypeIcon(node.type);
+                    var typeText = this.getNodeTypeText(node.type);
+                    
+                    $('#node-title').html(icon + ' ' + node.text + ' <small class="text-muted">(' + typeText + ')</small>');
+                    
+                    var detailHtml = this.generateDetailHtml(node);
+                    $('#node-detail-body').html(detailHtml);
+                },
+                
+                // 获取类型图标
+                getTypeIcon: function(type) {
+                    var icons = {
+                        'product': '<i class="fa fa-cube text-primary"></i>',
+                        'component': '<i class="fa fa-cubes text-info"></i>',
+                        'material': '<i class="fa fa-square text-danger"></i>',
+                        'process': '<i class="fa fa-cog text-warning"></i>'
+                    };
+                    return icons[type] || '<i class="fa fa-question-circle"></i>';
+                },
+                
+                // 获取节点类型文本
+                getNodeTypeText: function(type) {
+                    var types = {
+                        'product': '产品',
+                        'component': '部件',
+                        'material': '材料',
+                        'process': '工艺'
+                    };
+                    return types[type] || '未知';
+                },
+                
+                // 生成详情HTML
+                generateDetailHtml: function(node) {
+                    var html = '<form class="form-horizontal" id="node-form">';
+                    var data = node.data;
+                    
+                    switch(node.type) {
+                        case 'component':
+                            html += this.generateComponentForm(data);
+                            break;
+                        case 'material':
+                            html += this.generateMaterialForm(data);
+                            break;
+                        case 'process':
+                            html += this.generateProcessForm(data);
+                            break;
+                    }
+                    
+                    html += '<div class="form-group">';
+                    html += '<div class="col-sm-offset-3 col-sm-9">';
+                    html += '<button type="button" class="btn btn-primary" onclick="BOMManager.saveNodeData()"><i class="fa fa-save"></i> 保存更改</button>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '</form>';
+                    
+                    return html;
+                },
+                
+                // 生成部件表单
+                generateComponentForm: function(data) {
+                    var html = '';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">部件名称:</label>';
-                    html += '<div class="col-sm-9"><input type="text" class="form-control" value="' + (data.name || '') + '" data-field="name"></div>';
+                    html += '<div class="col-sm-9"><input type="text" class="form-control" name="name" value="' + (data.name || '') + '" required></div>';
                     html += '</div>';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">使用数量:</label>';
-                    html += '<div class="col-sm-9"><input type="number" class="form-control" value="' + (data.quantity_per_parent || 1) + '" data-field="quantity_per_parent" step="0.0001"></div>';
+                    html += '<div class="col-sm-9"><input type="number" class="form-control" name="quantity_per_parent" value="' + (data.quantity_per_parent || 1) + '" step="0.0001" min="0" required></div>';
                     html += '</div>';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">长度公式:</label>';
-                    html += '<div class="col-sm-9"><input type="text" class="form-control" value="' + (data.length_formula || '') + '" data-field="length_formula"></div>';
+                    html += '<div class="col-sm-9"><input type="text" class="form-control" name="length_formula" value="' + (data.length_formula || '') + '" placeholder="如：=L*0.8"></div>';
                     html += '</div>';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">宽度公式:</label>';
-                    html += '<div class="col-sm-9"><input type="text" class="form-control" value="' + (data.width_formula || '') + '" data-field="width_formula"></div>';
+                    html += '<div class="col-sm-9"><input type="text" class="form-control" name="width_formula" value="' + (data.width_formula || '') + '" placeholder="如：=W*0.6"></div>';
                     html += '</div>';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">高度公式:</label>';
-                    html += '<div class="col-sm-9"><input type="text" class="form-control" value="' + (data.height_formula || '') + '" data-field="height_formula"></div>';
+                    html += '<div class="col-sm-9"><input type="text" class="form-control" name="height_formula" value="' + (data.height_formula || '') + '" placeholder="如：=H+10"></div>';
                     html += '</div>';
-                    break;
-                    
-                case 'material':
+                    return html;
+                },
+                
+                // 生成材料表单
+                generateMaterialForm: function(data) {
+                    var html = '';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">材料名称:</label>';
                     html += '<div class="col-sm-9"><p class="form-control-static">' + (data.name || '') + '</p></div>';
                     html += '</div>';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">长度公式:</label>';
-                    html += '<div class="col-sm-9"><input type="text" class="form-control" value="' + (data.length_formula || '') + '" data-field="length_formula"></div>';
+                    html += '<div class="col-sm-9"><input type="text" class="form-control" name="length_formula" value="' + (data.length_formula || '') + '" placeholder="如：=L+5"></div>';
                     html += '</div>';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">宽度公式:</label>';
-                    html += '<div class="col-sm-9"><input type="text" class="form-control" value="' + (data.width_formula || '') + '" data-field="width_formula"></div>';
+                    html += '<div class="col-sm-9"><input type="text" class="form-control" name="width_formula" value="' + (data.width_formula || '') + '" placeholder="如：=W+3"></div>';
                     html += '</div>';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">拼版数:</label>';
-                    html += '<div class="col-sm-9"><input type="number" class="form-control" value="' + (data.imposition_quantity || 1) + '" data-field="imposition_quantity" min="1"></div>';
+                    html += '<div class="col-sm-9"><input type="number" class="form-control" name="imposition_quantity" value="' + (data.imposition_quantity || 1) + '" min="1" required></div>';
                     html += '</div>';
-                    break;
-                    
-                case 'process':
+                    return html;
+                },
+                
+                // 生成工艺表单
+                generateProcessForm: function(data) {
+                    var html = '';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">工艺名称:</label>';
                     html += '<div class="col-sm-9"><p class="form-control-static">' + (data.name || '') + '</p></div>';
                     html += '</div>';
                     html += '<div class="form-group">';
                     html += '<label class="col-sm-3 control-label">成本覆盖:</label>';
-                    html += '<div class="col-sm-9"><input type="number" class="form-control" value="' + (data.cost_override || '') + '" data-field="cost_override" step="0.000001"></div>';
+                    html += '<div class="col-sm-9"><input type="number" class="form-control" name="cost_override" value="' + (data.cost_override || '') + '" step="0.000001" placeholder="覆盖默认成本设置"></div>';
                     html += '</div>';
-                    break;
-            }
-            
-            html += '</form>';
-            return html;
-        }
-
-        // 添加部件
-        function addComponent() {
-            if (!selectedNode) {
-                Toastr.error('请先选择一个节点');
-                return;
-            }
-            
-            Fast.api.open('bom/component/add?product_id=' + productId + '&parent_id=' + selectedNode.data.id, '添加部件', {
-                callback: function() {
-                    loadBomTree();
+                    return html;
+                },
+                
+                // 保存节点数据
+                saveNodeData: function() {
+                    if (!this.selectedNode) {
+                        Toastr.error('请先选择一个节点');
+                        return;
+                    }
+                    
+                    var formData = $('#node-form').serializeArray();
+                    var data = {};
+                    $.each(formData, function(i, field) {
+                        data[field.name] = field.value;
+                    });
+                    
+                    var url = this.getUpdateUrl(this.selectedNode.type, this.selectedNode.data.id);
+                    
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {row: data},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.code === 1) {
+                                Toastr.success('保存成功');
+                                BOMManager.refreshTree();
+                            } else {
+                                Toastr.error(ret.msg);
+                            }
+                        },
+                        error: function() {
+                            Toastr.error('保存失败');
+                        }
+                    });
+                },
+                
+                // 获取更新URL
+                getUpdateUrl: function(type, id) {
+                    var urls = {
+                        'component': 'bom/component/edit/ids/' + id,
+                        'material': 'bom/materialusage/edit/ids/' + id,
+                        'process': 'bom/processassignment/edit/ids/' + id
+                    };
+                    return urls[type];
+                },
+                
+                // 右键菜单
+                getContextMenu: function(node) {
+                    var items = {};
+                    
+                    if (node.type === 'product' || node.type === 'component') {
+                        items.addComponent = {
+                            label: "添加部件",
+                            icon: "fa fa-plus",
+                            action: function() {
+                                BOMManager.addComponent();
+                            }
+                        };
+                    }
+                    
+                    if (node.type === 'component') {
+                        items.addMaterial = {
+                            label: "添加材料",
+                            icon: "fa fa-plus-circle",
+                            action: function() {
+                                BOMManager.addMaterial();
+                            }
+                        };
+                        items.addProcess = {
+                            label: "添加工艺",
+                            icon: "fa fa-cog",
+                            action: function() {
+                                BOMManager.addProcess();
+                            }
+                        };
+                    }
+                    
+                    if (node.type !== 'product') {
+                        items.edit = {
+                            label: "编辑",
+                            icon: "fa fa-edit",
+                            action: function() {
+                                BOMManager.editNode();
+                            }
+                        };
+                        items.duplicate = {
+                            label: "复制",
+                            icon: "fa fa-copy",
+                            action: function() {
+                                BOMManager.duplicateNode();
+                            }
+                        };
+                        items.remove = {
+                            label: "删除",
+                            icon: "fa fa-trash",
+                            action: function() {
+                                BOMManager.deleteNode();
+                            }
+                        };
+                    }
+                    
+                    return items;
+                },
+                
+                // 绑定事件
+                bindEvents: function() {
+                    var self = this;
+                    
+                    // 搜索事件
+                    $('#tree-search').on('keyup', function() {
+                        clearTimeout(self.searchTimeout);
+                        self.searchTimeout = setTimeout(function() {
+                            self.searchTree($('#tree-search').val());
+                        }, 300);
+                    });
+                },
+                
+                // 搜索树
+                searchTree: function(str) {
+                    if (this.treeInstance) {
+                        this.treeInstance.search(str);
+                    }
+                },
+                
+                // 刷新树
+                refreshTree: function() {
+                    $('#tree-loading').show();
+                    if (this.treeInstance) {
+                        this.treeInstance.refresh();
+                    }
+                },
+                
+                // 展开全部
+                expandAll: function() {
+                    if (this.treeInstance) {
+                        this.treeInstance.open_all();
+                    }
+                },
+                
+                // 折叠全部
+                collapseAll: function() {
+                    if (this.treeInstance) {
+                        this.treeInstance.close_all();
+                    }
+                },
+                
+                // 添加部件
+                addComponent: function() {
+                    if (!this.selectedNode) {
+                        Toastr.error('请先选择一个节点');
+                        return;
+                    }
+                    
+                    var parentId = this.selectedNode.data.id;
+                    var parentType = this.selectedNode.type;
+                    
+                    if (parentType !== 'product' && parentType !== 'component') {
+                        Toastr.error('只能在产品或部件节点下添加部件');
+                        return;
+                    }
+                    
+                    var url = 'bom/component/add?product_id=' + this.productId;
+                    if (parentType === 'component') {
+                        url += '&parent_component_id=' + parentId;
+                    }
+                    
+                    Fast.api.open(url, '添加部件', {
+                        area: ['600px', '500px'],
+                        callback: function() {
+                            BOMManager.refreshTree();
+                        }
+                    });
+                },
+                
+                // 添加材料
+                addMaterial: function() {
+                    if (!this.selectedNode || this.selectedNode.type !== 'component') {
+                        Toastr.error('请选择一个部件节点');
+                        return;
+                    }
+                    
+                    Fast.api.open('bom/materialusage/add?component_id=' + this.selectedNode.data.id, '添加材料', {
+                        area: ['600px', '500px'],
+                        callback: function() {
+                            BOMManager.refreshTree();
+                        }
+                    });
+                },
+                
+                // 添加工艺
+                addProcess: function() {
+                    if (!this.selectedNode) {
+                        Toastr.error('请先选择一个节点');
+                        return;
+                    }
+                    
+                    var url = 'bom/processassignment/add?';
+                    if (this.selectedNode.type === 'component') {
+                        url += 'component_id=' + this.selectedNode.data.id;
+                    } else if (this.selectedNode.type === 'material') {
+                        url += 'material_usage_id=' + this.selectedNode.data.id;
+                    } else {
+                        Toastr.error('只能为部件或材料添加工艺');
+                        return;
+                    }
+                    
+                    Fast.api.open(url, '添加工艺', {
+                        area: ['600px', '400px'],
+                        callback: function() {
+                            BOMManager.refreshTree();
+                        }
+                    });
+                },
+                
+                // 编辑节点
+                editNode: function() {
+                    if (!this.selectedNode) {
+                        Toastr.error('请先选择一个节点');
+                        return;
+                    }
+                    
+                    var url = this.getUpdateUrl(this.selectedNode.type, this.selectedNode.data.id);
+                    
+                    Fast.api.open(url, '编辑节点', {
+                        area: ['600px', '500px'],
+                        callback: function() {
+                            BOMManager.refreshTree();
+                        }
+                    });
+                },
+                
+                // 复制节点
+                duplicateNode: function() {
+                    if (!this.selectedNode) {
+                        Toastr.error('请先选择一个节点');
+                        return;
+                    }
+                    
+                    Layer.confirm('确定要复制此节点吗？', function() {
+                        $.ajax({
+                            url: 'bom/product/duplicateNode',
+                            type: 'POST',
+                            data: {
+                                node_type: BOMManager.selectedNode.type,
+                                node_id: BOMManager.selectedNode.data.id
+                            },
+                            dataType: 'json',
+                            success: function(ret) {
+                                if (ret.code === 1) {
+                                    Toastr.success('复制成功');
+                                    BOMManager.refreshTree();
+                                } else {
+                                    Toastr.error(ret.msg);
+                                }
+                            },
+                            error: function() {
+                                Toastr.error('复制失败');
+                            }
+                        });
+                    });
+                },
+                
+                // 删除节点
+                deleteNode: function() {
+                    if (!this.selectedNode) {
+                        Toastr.error('请先选择一个节点');
+                        return;
+                    }
+                    
+                    if (this.selectedNode.type === 'product') {
+                        Toastr.error('不能删除产品节点');
+                        return;
+                    }
+                    
+                    Layer.confirm('确定要删除此节点及其所有子节点吗？此操作不可恢复！', function() {
+                        var url = BOMManager.getUpdateUrl(BOMManager.selectedNode.type, BOMManager.selectedNode.data.id).replace('/edit/', '/del/');
+                        
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            dataType: 'json',
+                            success: function(ret) {
+                                if (ret.code === 1) {
+                                    Toastr.success('删除成功');
+                                    BOMManager.refreshTree();
+                                    $('#node-panel').hide();
+                                    $('#detail-toolbar').hide();
+                                    $('#quick-actions-panel').hide();
+                                } else {
+                                    Toastr.error(ret.msg);
+                                }
+                            },
+                            error: function() {
+                                Toastr.error('删除失败');
+                            }
+                        });
+                    });
                 }
-            });
-        }
-
-        // 添加材料
-        function addMaterial() {
-            if (!selectedNode || selectedNode.type !== 'component') {
-                Toastr.error('请选择一个部件节点');
-                return;
-            }
+            };
             
-            Fast.api.open('bom/materialusage/add?component_id=' + selectedNode.data.id, '添加材料', {
-                callback: function() {
-                    loadBomTree();
-                }
-            });
-        }
-
-        // 添加工艺
-        function addProcess() {
-            if (!selectedNode) {
-                Toastr.error('请先选择一个节点');
-                return;
-            }
+            // 全局函数定义
+            window.addComponent = function() { BOMManager.addComponent(); };
+            window.addMaterial = function() { BOMManager.addMaterial(); };
+            window.addProcess = function() { BOMManager.addProcess(); };
+            window.editNode = function() { BOMManager.editNode(); };
+            window.duplicateNode = function() { BOMManager.duplicateNode(); };
+            window.deleteNode = function() { BOMManager.deleteNode(); };
+            window.expandAll = function() { BOMManager.expandAll(); };
+            window.collapseAll = function() { BOMManager.collapseAll(); };
+            window.refreshTree = function() { BOMManager.refreshTree(); };
+            window.searchTree = function(str) { BOMManager.searchTree(str); };
             
-            var url = 'bom/processassignment/add?';
-            if (selectedNode.type === 'component') {
-                url += 'component_id=' + selectedNode.data.id;
-            } else if (selectedNode.type === 'material') {
-                url += 'material_usage_id=' + selectedNode.data.id;
-            }
-            
-            Fast.api.open(url, '添加工艺', {
-                callback: function() {
-                    loadBomTree();
-                }
-            });
-        }
-
-        // 编辑节点
-        function editNode() {
-            if (!selectedNode) {
-                Toastr.error('请先选择一个节点');
-                return;
-            }
-            
-            var url = '';
-            switch(selectedNode.type) {
-                case 'component':
-                    url = 'bom/component/edit/ids/' + selectedNode.data.id;
-                    break;
-                case 'material':
-                    url = 'bom/materialusage/edit/ids/' + selectedNode.data.id;
-                    break;
-                case 'process':
-                    url = 'bom/processassignment/edit/ids/' + selectedNode.data.id;
-                    break;
-                default:
-                    Toastr.error('此节点不支持编辑');
-                    return;
-            }
-            
-            Fast.api.open(url, '编辑节点', {
-                callback: function() {
-                    loadBomTree();
-                }
-            });
-        }
-
-        // 删除节点
-        function deleteNode() {
-            if (!selectedNode) {
-                Toastr.error('请先选择一个节点');
-                return;
-            }
-            
-            if (selectedNode.type === 'product') {
-                Toastr.error('不能删除产品节点');
-                return;
-            }
-            
-            Layer.confirm('确定要删除此节点吗？', function() {
-                var url = '';
-                switch(selectedNode.type) {
-                    case 'component':
-                        url = 'bom/component/del/ids/' + selectedNode.data.id;
-                        break;
-                    case 'material':
-                        url = 'bom/materialusage/del/ids/' + selectedNode.data.id;
-                        break;
-                    case 'process':
-                        url = 'bom/processassignment/del/ids/' + selectedNode.data.id;
-                        break;
-                }
+            // 更新产品信息
+            window.updateProductInfo = function() {
+                var data = {
+                    length_formula: $('#product-panel input[data-field="length_formula"]').val(),
+                    width_formula: $('#product-panel input[data-field="width_formula"]').val(),
+                    height_formula: $('#product-panel input[data-field="height_formula"]').val()
+                };
                 
                 $.ajax({
-                    url: url,
+                    url: 'bom/product/edit/ids/' + BOMManager.productId,
                     type: 'POST',
+                    data: {row: data},
                     dataType: 'json',
                     success: function(ret) {
                         if (ret.code === 1) {
-                            Toastr.success(ret.msg);
-                            loadBomTree();
-                            $('#node-panel').hide();
+                            Toastr.success('产品信息更新成功');
                         } else {
                             Toastr.error(ret.msg);
                         }
                     },
                     error: function() {
-                        Toastr.error('删除失败');
+                        Toastr.error('更新失败');
                     }
                 });
+            };
+            
+            // 计算节点成本
+            window.calculateNodeCost = function() {
+                if (!BOMManager.selectedNode) {
+                    Toastr.error('请先选择一个节点');
+                    return;
+                }
+                Toastr.info('节点成本计算功能开发中...');
+            };
+            
+            // 验证节点数据
+            window.validateNode = function() {
+                if (!BOMManager.selectedNode) {
+                    Toastr.error('请先选择一个节点');
+                    return;
+                }
+                Toastr.info('节点数据验证功能开发中...');
+            };
+            
+            // 保存BOM数据
+            window.saveBomData = function() {
+                Toastr.success('BOM数据已保存');
+            };
+            
+            // 导出BOM
+            window.exportBom = function() {
+                window.open('bom/product/exportBom/ids/' + BOMManager.productId);
+            };
+            
+            // 页面加载完成后初始化
+            $(document).ready(function() {
+                $('#tree-loading').show();
+                BOMManager.init();
+                
+                // 工具提示
+                $('[title]').tooltip();
             });
-        }
-
-        // 展开全部
-        function expandAll() {
-            if (bomTree) {
-                bomTree.expandAll(true);
-            }
-        }
-
-        // 折叠全部
-        function collapseAll() {
-            if (bomTree) {
-                bomTree.expandAll(false);
-            }
-        }
-
-        // 保存BOM数据
-        function saveBomData() {
-            // 这里可以添加保存逻辑
-            Toastr.success('BOM数据已保存');
-        }
+        });
     </script>
 </body>
 </html>
