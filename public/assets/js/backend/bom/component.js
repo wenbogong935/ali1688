@@ -25,23 +25,49 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
-                        {field: 'name', title: __('Name'), operate: 'LIKE'},
-                        {field: 'description', title: __('Description'), operate: 'LIKE'},
+                        {field: 'id', title: __('Id'), width: 60},
+                        {field: 'name', title: __('Name'), operate: 'LIKE',
+                         formatter: function(value, row, index) {
+                             return '<strong><i class="fa fa-cube text-primary"></i> ' + value + '</strong>';
+                         }},
+                        {field: 'description', title: __('Description'), operate: 'LIKE',
+                         formatter: function(value, row, index) {
+                             return value ? '<span class="text-muted">' + value + '</span>' : 
+                                    '<span class="text-muted">无描述</span>';
+                         }},
                         {field: 'product.name', title: '所属产品', operate: 'LIKE'},
                         {field: 'parent.name', title: '父部件', operate: 'LIKE', formatter: function(value, row, index) {
                             return value || '<span class="text-muted">顶级部件</span>';
                         }},
-                        {field: 'quantity', title: '数量', operate: 'BETWEEN', sortable: true},
-                        {field: 'length_formula', title: '长度公式', operate: 'LIKE', formatter: function(value, row, index) {
-                            return value || '<span class="text-muted">未设置</span>';
-                        }},
-                        {field: 'width_formula', title: '宽度公式', operate: 'LIKE', formatter: function(value, row, index) {
-                            return value || '<span class="text-muted">未设置</span>';
-                        }},
-                        {field: 'height_formula', title: '高度公式', operate: 'LIKE', formatter: function(value, row, index) {
-                            return value || '<span class="text-muted">未设置</span>';
-                        }},
+                        {field: 'quantity', title: '数量', operate: 'BETWEEN', sortable: true,
+                         formatter: function(value, row, index) {
+                             var qty = parseFloat(value) || 1;
+                             return '<span class="badge badge-info">' + qty + '</span>';
+                         }},
+                        {field: 'length_formula', title: '长度公式', operate: 'LIKE', 
+                         formatter: function(value, row, index) {
+                             if (!value) return '<span class="text-muted">未设置</span>';
+                             var isFormula = value.toString().startsWith('=');
+                             return isFormula ? 
+                                 '<code class="text-info">' + value + '</code>' : 
+                                 '<code class="text-success">' + value + '</code>';
+                         }},
+                        {field: 'width_formula', title: '宽度公式', operate: 'LIKE', 
+                         formatter: function(value, row, index) {
+                             if (!value) return '<span class="text-muted">未设置</span>';
+                             var isFormula = value.toString().startsWith('=');
+                             return isFormula ? 
+                                 '<code class="text-info">' + value + '</code>' : 
+                                 '<code class="text-success">' + value + '</code>';
+                         }},
+                        {field: 'height_formula', title: '高度公式', operate: 'LIKE', 
+                         formatter: function(value, row, index) {
+                             if (!value) return '<span class="text-muted">未设置</span>';
+                             var isFormula = value.toString().startsWith('=');
+                             return isFormula ? 
+                                 '<code class="text-info">' + value + '</code>' : 
+                                 '<code class="text-success">' + value + '</code>';
+                         }},
                         {field: 'sequence', title: '排序', operate: 'BETWEEN', sortable: true},
                         {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
                         {field: 'updatetime', title: __('Updatetime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},

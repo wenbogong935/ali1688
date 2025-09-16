@@ -84,20 +84,55 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         api: {
             bindevent: function () {
                 Form.api.bindevent($("form[role=form]"));
+                
+                // 成本类型变化时的处理 - 增强版
+                $(document).on('change', 'select[name="row[cost_type]"]', function() {
+                    var costType = $(this).val();
+                    Controller.api.updateCostFields(costType);
+                });
+                
+                // 初始化时设置字段状态
+                var initialCostType = $('select[name="row[cost_type]"]').val();
+                if (initialCostType) {
+                    Controller.api.updateCostFields(initialCostType);
+                }
             },
             updateCostFields: function(costType) {
-                // 根据成本类型更新相关字段的显示状态
+                // 根据成本类型更新相关字段的显示状态 - 增强版
                 var $setupCost = $("#c-setup_cost").closest('.form-group');
                 var $throughputRate = $("#c-throughput_rate").closest('.form-group');
                 var $wasteRate = $("#c-waste_rate").closest('.form-group');
                 
-                if (costType === 'fixed') {
-                    $setupCost.hide();
-                    $throughputRate.hide();
-                } else {
-                    $setupCost.show();
-                    $throughputRate.show();
+                // 重置显示状态
+                $setupCost.show();
+                $throughputRate.show();
+                $wasteRate.show();
+                
+                // 根据成本类型调整字段显示和帮助文本
+                switch(costType) {
+                    case 'fixed':
+                        $throughputRate.hide();
+                        Controller.api.addHelpText('fixed', '固定成本不受产量影响');
+                        break;
+                    case 'per_unit_variable':
+                        Controller.api.addHelpText('per_unit_variable', '按件计算，费率为每件成本');
+                        break;
+                    case 'per_area_variable':
+                        Controller.api.addHelpText('per_area_variable', '按面积计算，费率为每平方米成本');
+                        break;
+                    case 'per_time_variable':
+                        Controller.api.addHelpText('per_time_variable', '按时间计算，费率为每小时成本');
+                        break;
                 }
+            },
+            
+            // 添加帮助文本
+            addHelpText: function(type, text) {
+                $('.process-help-text').remove();
+                $('select[name="row[cost_type]"]').parent().append(
+                    '<div class="process-help-text text-muted small mt-1">' +
+                    '<i class="fa fa-info-circle"></i> ' + text + '</div>'
+                );
             }
         }
     };

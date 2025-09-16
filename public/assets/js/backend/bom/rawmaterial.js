@@ -25,13 +25,29 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
-                        {field: 'name', title: __('Name'), operate: 'LIKE'},
-                        {field: 'description', title: __('Description'), operate: 'LIKE'},
+                        {field: 'id', title: __('Id'), width: 60},
+                        {field: 'name', title: __('Name'), operate: 'LIKE',
+                         formatter: function(value, row, index) {
+                             var typeClass = row.type ? 'label-info' : 'label-default';
+                             var typeText = row.type || '未分类';
+                             return '<div>' +
+                                    '<strong>' + value + '</strong>' +
+                                    '<div><span class="label ' + typeClass + '">' + typeText + '</span></div>' +
+                                    '</div>';
+                         }},
+                        {field: 'description', title: __('Description'), operate: 'LIKE',
+                         formatter: function(value, row, index) {
+                             return value ? 
+                                 '<span class="text-muted" title="' + value + '">' + 
+                                 (value.length > 40 ? value.substring(0, 40) + '...' : value) + '</span>' : 
+                                 '<span class="text-muted">无描述</span>';
+                         }},
                         {field: 'type', title: '材料类型', operate: '=', searchList: {"paper":"纸类","plastic":"塑料类","metal":"金属类","wood":"木材类","glass":"玻璃类","ceramic":"陶瓷类","textile":"纺织品","chemical":"化学品","other":"其他"}},
                         {field: 'unit_of_measure', title: '计量单位', operate: '=', searchList: {"per_kg":"每公斤","per_sqm":"每平方米","per_cbm":"每立方米","per_piece":"每件","per_meter":"每米","per_liter":"每升","per_roll":"每卷","per_sheet":"每张"}},
-                        {field: 'unit_cost', title: '单位成本', operate: 'BETWEEN', sortable: true, formatter: function(value, row, index) {
-                            return '￥' + parseFloat(value).toFixed(2);
+                        {field: 'unit_cost', title: '单位成本', operate: 'BETWEEN', sortable: true, 
+                         formatter: function(value, row, index) {
+                            var cost = parseFloat(value) || 0;
+                            return '<span class="text-success"><strong>¥' + cost.toFixed(4) + '</strong></span>';
                         }},
                         {field: 'standard_length', title: '标准长度(cm)', operate: 'BETWEEN', sortable: true},
                         {field: 'standard_width', title: '标准宽度(cm)', operate: 'BETWEEN', sortable: true},
