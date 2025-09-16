@@ -57,7 +57,7 @@ class RawMaterial extends Backend
                     ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id','name','type','unit_cost','unit_of_measure','std_length_cm','std_width_cm','std_grammage_gsm','thickness_mm','density_kgm3','notes','createtime','updatetime']);
+                $row->visible(['id','name','description','type','unit_of_measure','unit_cost','standard_length','standard_width','standard_height','gsm','thickness','density','supplier','notes','createtime','updatetime']);
             }
 
             $result = array("total" => $list->total(), "rows" => $list->items());

@@ -65,7 +65,7 @@ class MaterialUsage extends Backend
                     ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id','component_id','raw_material_id','alias','length_formula','width_formula','grammage_override','thickness_override_mm','imposition_quantity','sequence','createtime','updatetime']);
+                $row->visible(['id','component_id','raw_material_id','length_formula','width_formula','height_formula','panel','gsm_override','thickness_override','density_override','sequence','createtime','updatetime']);
                 $row->visible(['component', 'rawMaterial']);
                 $row->getRelation('component')->visible(['name', 'product']);
                 if ($row->component && $row->component->product) {

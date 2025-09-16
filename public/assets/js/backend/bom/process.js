@@ -37,7 +37,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             };
                             return types[value] || value;
                         }},
-                        {field: 'unit_of_cost', title: '成本单位', operate: '=', searchList: {"yuan_per_sqm":"元/平方米","yuan_per_kg":"元/公斤","yuan_per_piece":"元/件","yuan_per_hour":"元/小时","yuan_fixed":"元(固定)"}},
+                        {field: 'unit_of_cost', title: '成本单位', operate: '=', searchList: {"yuan_per_piece":"元/件","yuan_per_sqm":"元/平方米","yuan_per_hour":"元/小时","yuan_per_batch":"元/批次","yuan_per_kg":"元/公斤"}},
                         {field: 'rate', title: '费率', operate: 'BETWEEN', sortable: true, formatter: function(value, row, index) {
                             return '￥' + parseFloat(value).toFixed(2);
                         }},

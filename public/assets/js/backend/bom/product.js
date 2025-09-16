@@ -116,9 +116,196 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         edit: function () {
             Controller.api.bindevent();
         },
+        },
+        add: function () {
+            Controller.api.bindevent();
+        },
+        edit: function () {
+            Controller.api.bindevent();
+        },
+        bom: function () {
+            Controller.api.bindevent();
+            
+            // 初始化BOM树
+            Controller.api.initBomTree();
+            
+            // 绑定树节点事件
+            Controller.api.bindTreeEvents();
+        },
+        calculate: function () {
+            Controller.api.bindevent();
+            
+            // 初始化成本计算界面
+            Controller.api.initCostCalculation();
+        },
         api: {
             bindevent: function () {
                 Form.api.bindevent($("form[role=form]"));
+            },
+            
+            // 初始化BOM树
+            initBomTree: function() {
+                var $bomTree = $("#bom-tree");
+                if ($bomTree.length === 0) return;
+                
+                // 加载BOM树数据
+                Fast.api.ajax({
+                    url: "bom/product/getBomTree",
+                    data: {id: Fast.api.query('ids')},
+                    success: function(data) {
+                        if (data.code === 1) {
+                            Controller.api.renderBomTree(data.data);
+                        }
+                    }
+                });
+            },
+            
+            // 渲染BOM树
+            renderBomTree: function(treeData) {
+                var $container = $("#bom-tree");
+                $container.empty();
+                
+                function renderNode(node, level) {
+                    var indent = level * 20;
+                    var nodeClass = 'tree-node';
+                    var nodeIcon = 'fa-cube';
+                    
+                    if (node.type === 'component') {
+                        nodeClass += ' component';
+                        nodeIcon = 'fa-cubes';
+                    } else if (node.type === 'material') {
+                        nodeClass += ' material';
+                        nodeIcon = 'fa-industry';
+                    } else if (node.type === 'process') {
+                        nodeClass += ' process';
+                        nodeIcon = 'fa-cogs';
+                    }
+                    
+                    var nodeHtml = '<div class="' + nodeClass + '" style="margin-left: ' + indent + 'px;" data-id="' + node.id + '" data-type="' + node.type + '">' +
+                        '<i class="fa ' + nodeIcon + ' node-icon ' + node.type + '"></i>' +
+                        '<span class="node-title">' + node.name + '</span>' +
+                        '<span class="node-info text-muted">' + (node.description || '') + '</span>' +
+                        '</div>';
+                    
+                    $container.append(nodeHtml);
+                    
+                    if (node.children && node.children.length > 0) {
+                        node.children.forEach(function(child) {
+                            renderNode(child, level + 1);
+                        });
+                    }
+                }
+                
+                if (treeData.components) {
+                    treeData.components.forEach(function(component) {
+                        renderNode(component, 0);
+                    });
+                }
+            },
+            
+            // 绑定树节点事件
+            bindTreeEvents: function() {
+                $(document).on('click', '.tree-node', function() {
+                    $('.tree-node').removeClass('selected');
+                    $(this).addClass('selected');
+                    
+                    var nodeId = $(this).data('id');
+                    var nodeType = $(this).data('type');
+                    
+                    Controller.api.loadNodeDetails(nodeId, nodeType);
+                });
+            },
+            
+            // 加载节点详情
+            loadNodeDetails: function(nodeId, nodeType) {
+                var $detailPanel = $("#bom-detail");
+                if ($detailPanel.length === 0) return;
+                
+                var url = "bom/" + nodeType + "/detail";
+                Fast.api.ajax({
+                    url: url,
+                    data: {id: nodeId},
+                    success: function(data) {
+                        if (data.code === 1) {
+                            Controller.api.renderNodeDetails(data.data, nodeType);
+                        }
+                    }
+                });
+            },
+            
+            // 渲染节点详情
+            renderNodeDetails: function(nodeData, nodeType) {
+                var $detailPanel = $("#bom-detail");
+                var detailHtml = '<div class="bom-detail-panel">' +
+                    '<div class="bom-detail-header">' + nodeData.name + ' (' + nodeType + ')</div>' +
+                    '<div class="bom-detail-body">';
+                
+                if (nodeType === 'component') {
+                    detailHtml += '<p><strong>描述:</strong> ' + (nodeData.description || '无') + '</p>' +
+                        '<p><strong>数量:</strong> ' + (nodeData.quantity || 1) + '</p>' +
+                        '<p><strong>长度公式:</strong> ' + (nodeData.length_formula || '未设置') + '</p>' +
+                        '<p><strong>宽度公式:</strong> ' + (nodeData.width_formula || '未设置') + '</p>' +
+                        '<p><strong>高度公式:</strong> ' + (nodeData.height_formula || '未设置') + '</p>';
+                } else if (nodeType === 'material') {
+                    detailHtml += '<p><strong>类型:</strong> ' + (nodeData.type || '未设置') + '</p>' +
+                        '<p><strong>单位成本:</strong> ￥' + (nodeData.unit_cost || 0) + '</p>' +
+                        '<p><strong>计量单位:</strong> ' + (nodeData.unit_of_measure || '未设置') + '</p>';
+                } else if (nodeType === 'process') {
+                    detailHtml += '<p><strong>成本类型:</strong> ' + (nodeData.cost_type || '未设置') + '</p>' +
+                        '<p><strong>费率:</strong> ￥' + (nodeData.rate || 0) + '</p>' +
+                        '<p><strong>设置费:</strong> ￥' + (nodeData.setup_cost || 0) + '</p>';
+                }
+                
+                detailHtml += '</div></div>';
+                $detailPanel.html(detailHtml);
+            },
+            
+            // 初始化成本计算界面
+            initCostCalculation: function() {
+                var $calculateBtn = $("#calculate-btn");
+                
+                $calculateBtn.on('click', function() {
+                    var productId = Fast.api.query('ids');
+                    var params = {
+                        id: productId,
+                        packaging_cost: parseFloat($("#packaging_cost").val()) || 0,
+                        labor_cost: parseFloat($("#labor_cost").val()) || 0,
+                        waste_rate: parseFloat($("#waste_rate").val()) || 0,
+                        small_batch_cost: parseFloat($("#small_batch_cost").val()) || 0
+                    };
+                    
+                    Fast.api.ajax({
+                        url: "bom/product/calculateCost",
+                        data: params,
+                        success: function(data) {
+                            if (data.code === 1) {
+                                Controller.api.renderCostResults(data.data);
+                            }
+                        }
+                    });
+                });
+            },
+            
+            // 渲染成本计算结果
+            renderCostResults: function(costData) {
+                var $resultsPanel = $("#cost-results");
+                if ($resultsPanel.length === 0) return;
+                
+                var resultsHtml = '<div class="cost-summary-card">' +
+                    '<div class="cost-summary-title">成本计算结果</div>' +
+                    '<div class="cost-breakdown">' +
+                    '<div class="cost-item"><div class="cost-item-label">材料成本</div><div class="cost-item-value">￥' + costData.material_cost.toFixed(2) + '</div></div>' +
+                    '<div class="cost-item"><div class="cost-item-label">工艺成本</div><div class="cost-item-value">￥' + costData.process_cost.toFixed(2) + '</div></div>' +
+                    '<div class="cost-item"><div class="cost-item-label">包装费</div><div class="cost-item-value">￥' + costData.packaging_cost.toFixed(2) + '</div></div>' +
+                    '<div class="cost-item"><div class="cost-item-label">人工费</div><div class="cost-item-value">￥' + costData.labor_cost.toFixed(2) + '</div></div>' +
+                    '</div>' +
+                    '<div class="total-cost">' +
+                    '<div class="cost-item-label">总成本</div>' +
+                    '<div class="total-cost-value">￥' + costData.total_cost.toFixed(2) + '</div>' +
+                    '</div>' +
+                    '</div>';
+                
+                $resultsPanel.html(resultsHtml);
             }
         }
     };

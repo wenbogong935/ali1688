@@ -29,7 +29,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'component.name', title: '部件', operate: 'LIKE'},
                         {field: 'component.product.name', title: '所属产品', operate: 'LIKE'},
                         {field: 'rawMaterial.name', title: '原材料', operate: 'LIKE'},
-                        {field: 'rawMaterial.type', title: '材料类型', operate: '=', searchList: {"纸类":"纸类","塑料类":"塑料类","金属类":"金属类","木材类":"木材类","玻璃类":"玻璃类","陶瓷类":"陶瓷类","纺织品":"纺织品","化学品":"化学品","其他":"其他"}},
+                        {field: 'rawMaterial.type', title: '材料类型', operate: '=', searchList: {"paper":"纸类","plastic":"塑料类","metal":"金属类","wood":"木材类","glass":"玻璃类","ceramic":"陶瓷类","textile":"纺织品","chemical":"化学品","other":"其他"}},
                         {field: 'length_formula', title: '长度公式', operate: 'LIKE', formatter: function(value, row, index) {
                             return value || '<span class="text-muted">未设置</span>';
                         }},

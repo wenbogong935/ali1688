@@ -1,0 +1,360 @@
+/* BOM Management CSS Styles */
+
+/* BOM Tree Styles */
+.bom-tree-container {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.bom-tree {
+    min-height: 400px;
+}
+
+.bom-tree .tree-node {
+    position: relative;
+    padding: 8px 12px;
+    margin: 2px 0;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.bom-tree .tree-node:hover {
+    background-color: #f8f9fa;
+    border-left-color: #007bff;
+}
+
+.bom-tree .tree-node.selected {
+    background-color: #e3f2fd;
+    border-left-color: #2196f3;
+}
+
+.bom-tree .tree-node.component {
+    border-left-color: #28a745;
+}
+
+.bom-tree .tree-node.material {
+    border-left-color: #fd7e14;
+}
+
+.bom-tree .tree-node.process {
+    border-left-color: #6610f2;
+}
+
+/* Node Icons */
+.node-icon {
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.node-icon.component {
+    color: #28a745;
+}
+
+.node-icon.material {
+    color: #fd7e14;
+}
+
+.node-icon.process {
+    color: #6610f2;
+}
+
+/* BOM Details Panel */
+.bom-detail-panel {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.bom-detail-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px 4px 0 0;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.bom-detail-body {
+    padding: 20px;
+}
+
+/* Cost Calculation Styles */
+.cost-summary-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.cost-summary-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.cost-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.cost-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.cost-item-label {
+    font-size: 12px;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.cost-item-value {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.total-cost {
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    padding-top: 15px;
+    text-align: center;
+}
+
+.total-cost-value {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* Formula Input Styles */
+.formula-input-group {
+    position: relative;
+}
+
+.formula-input {
+    padding-left: 40px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+}
+
+.formula-prefix {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-weight: bold;
+    z-index: 3;
+}
+
+.formula-help {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+/* Process Flow Styles */
+.process-flow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.process-step {
+    background: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.process-arrow {
+    color: #6c757d;
+    font-size: 16px;
+}
+
+/* Material Properties Grid */
+.material-properties {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.property-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.property-label {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.property-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Responsive Table Enhancements */
+.table-responsive-stack {
+    overflow-x: auto;
+}
+
+.table-responsive-stack .table th,
+.table-responsive-stack .table td {
+    white-space: nowrap;
+}
+
+/* Action Button Enhancements */
+.btn-group-vertical .btn {
+    border-radius: 0;
+}
+
+.btn-group-vertical .btn:first-child {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.btn-group-vertical .btn:last-child {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* Status Indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-indicator.active {
+    background-color: #28a745;
+}
+
+.status-indicator.inactive {
+    background-color: #dc3545;
+}
+
+.status-indicator.pending {
+    background-color: #ffc107;
+}
+
+/* Loading States */
+.bom-loading {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+.bom-loading .fa-spin {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* Tooltips for BOM Elements */
+.bom-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.bom-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+/* Error States */
+.bom-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.bom-error .fa {
+    margin-right: 8px;
+}
+
+/* Success States */
+.bom-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.bom-success .fa {
+    margin-right: 8px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .bom-container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .bom-tree,
+    .bom-detail {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .cost-breakdown {
+        grid-template-columns: 1fr;
+    }
+    
+    .material-properties {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .material-properties {
+        grid-template-columns: 1fr;
+    }
+    
+    .process-flow {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .process-arrow {
+        transform: rotate(90deg);
+    }
+}

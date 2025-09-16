@@ -65,7 +65,7 @@ class Component extends Backend
                     ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id','product_id','parent_component_id','name','quantity_per_parent','length_formula','width_formula','height_formula','sequence','createtime','updatetime']);
+                $row->visible(['id','product_id','parent_component_id','name','description','quantity','length_formula','width_formula','height_formula','sequence','createtime','updatetime']);
                 $row->visible(['product']);
                 $row->getRelation('product')->visible(['name']);
                 if ($row->parent) {

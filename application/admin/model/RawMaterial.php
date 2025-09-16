@@ -30,15 +30,15 @@ class RawMaterial extends Model
     public function getTypeList()
     {
         return [
-            '纸类' => '纸类',
-            '塑料类' => '塑料类',
-            '金属类' => '金属类',
-            '木材类' => '木材类',
-            '玻璃类' => '玻璃类',
-            '陶瓷类' => '陶瓷类',
-            '纺织品' => '纺织品',
-            '化学品' => '化学品',
-            '其他' => '其他'
+            'paper' => '纸类',
+            'plastic' => '塑料类',
+            'metal' => '金属类',
+            'wood' => '木材类',
+            'glass' => '玻璃类',
+            'ceramic' => '陶瓷类',
+            'textile' => '纺织品',
+            'chemical' => '化学品',
+            'other' => '其他'
         ];
     }
 
@@ -48,12 +48,14 @@ class RawMaterial extends Model
     public function getUnitOfMeasureList()
     {
         return [
-            '每公斤' => '每公斤',
-            '每平方米' => '每平方米',
-            '每立方米' => '每立方米',
-            '每件' => '每件',
-            '每米' => '每米',
-            '每升' => '每升'
+            'per_kg' => '每公斤',
+            'per_sqm' => '每平方米',
+            'per_cbm' => '每立方米',
+            'per_piece' => '每件',
+            'per_meter' => '每米',
+            'per_liter' => '每升',
+            'per_roll' => '每卷',
+            'per_sheet' => '每张'
         ];
     }
 

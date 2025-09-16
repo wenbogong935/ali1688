@@ -30,10 +30,10 @@ class Process extends Model
     public function getCostTypeList()
     {
         return [
-            '每单位可变' => '每单位可变',
-            '每面积可变' => '每面积可变',
-            '每时间可变' => '每时间可变',
-            '固定' => '固定'
+            'per_unit_variable' => '每单位可变',
+            'per_area_variable' => '每面积可变',
+            'per_time_variable' => '每时间可变',
+            'fixed' => '固定'
         ];
     }
 
@@ -43,11 +43,11 @@ class Process extends Model
     public function getUnitOfCostList()
     {
         return [
-            '元/件' => '元/件',
-            '元/平方米' => '元/平方米',
-            '元/小时' => '元/小时',
-            '元/批次' => '元/批次',
-            '元/公斤' => '元/公斤',
+            'yuan_per_piece' => '元/件',
+            'yuan_per_sqm' => '元/平方米',
+            'yuan_per_hour' => '元/小时',
+            'yuan_per_batch' => '元/批次',
+            'yuan_per_kg' => '元/公斤',
             '元/米' => '元/米'
         ];
     }
