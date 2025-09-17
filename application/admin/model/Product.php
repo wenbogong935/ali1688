@@ -44,17 +44,10 @@ class Product extends Model
      */
     public function getFullBomTree()
     {
-        return $this->with([
-            'components' => function($query) {
-                $query->with([
-                    'children.materialUsages.rawMaterial',
-                    'children.processAssignments.process',
-                    'materialUsages.rawMaterial',
-                    'materialUsages.processAssignments.process',
-                    'processAssignments.process'
-                ]);
-            }
-        ])->find($this->id);
+        // This method is now simplified. The heavy lifting of building the tree
+        // will be handled by the controller to avoid performance bottlenecks.
+        // This function will now just return the model with its direct components.
+        return $this->with('components')->find($this->id);
     }
 
     /**

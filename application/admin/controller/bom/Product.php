@@ -31,12 +31,6 @@ class Product extends Backend
     }
 
     /**
-     * 默认生成的控制器所继承的父类中有index/add/edit/del/multi五个基础方法
-     * 因此在当前控制器中可不用编写增删改查的代码,除非需要自定义
-     * 如果需要自定义,可以覆盖对应的方法
-     */
-
-    /**
      * 查看
      */
     public function index()
@@ -58,7 +52,8 @@ class Product extends Backend
                     ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id','name','description','image','length_formula','width_formula','height_formula','createtime','updatetime']);
+                // The original code was missing the status field.
+                $row->visible(['id','name','status','description','image','length_formula','width_formula','height_formula','createtime','updatetime']);
             }
 
             $result = array("total" => $list->total(), "rows" => $list->items());
@@ -98,7 +93,7 @@ class Product extends Backend
                 } catch (PDOException $e) {
                     Db::rollback();
                     $this->error($e->getMessage());
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     Db::rollback();
                     $this->error($e->getMessage());
                 }
@@ -147,7 +142,7 @@ class Product extends Backend
                 } catch (PDOException $e) {
                     Db::rollback();
                     $this->error($e->getMessage());
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     Db::rollback();
                     $this->error($e->getMessage());
                 }
@@ -162,6 +157,75 @@ class Product extends Backend
         $this->view->assign("row", $row);
         return $this->view->fetch('bom/product/edit');
     }
+
+    /**
+     * 高效加载并构建BOM树
+     */
+    private function loadFullBom($productId)
+    {
+        $product = ProductModel::get($productId);
+        if (!$product) {
+            return null;
+        }
+
+        // 1. 一次性获取所有组件及关联数据
+        $components = \app\admin\model\Component::where('product_id', $productId)
+            ->order('sequence', 'asc')
+            ->select();
+
+        if ($components->isEmpty()) {
+            $product->setRelation('components', new \think\Collection());
+            return $product;
+        }
+
+        $componentIds = $components->column('id');
+
+        // 2. 一次性获取所有材料使用和工艺分配
+        $materialUsages = \app\admin\model\MaterialUsage::with('rawMaterial')
+            ->whereIn('component_id', $componentIds)
+            ->order('sequence', 'asc')
+            ->select();
+
+        $processAssignments = \app\admin\model\ProcessAssignment::with('process')
+            ->whereIn('component_id', $componentIds)
+            ->order('sequence', 'asc')
+            ->select();
+
+        // 3. 将数据按 component_id 分组
+        $materialsByComponent = [];
+        foreach ($materialUsages as $usage) {
+            $materialsByComponent[$usage->component_id][] = $usage;
+        }
+
+        $processesByComponent = [];
+        foreach ($processAssignments as $assignment) {
+            $processesByComponent[$assignment->component_id][] = $assignment;
+        }
+
+        // 4. 在PHP中构建树并关联数据
+        $componentMap = [];
+        foreach ($components as $component) {
+            $component->setRelation('materialUsages', new \think\Collection($materialsByComponent[$component->id] ?? []));
+            $component->setRelation('processAssignments', new \think\Collection($processesByComponent[$component->id] ?? []));
+            $component->setRelation('children', new \think\Collection());
+            $componentMap[$component->id] = $component;
+        }
+
+        $rootComponents = [];
+        foreach ($componentMap as $id => &$component) {
+            if ($component->parent_component_id && isset($componentMap[$component->parent_component_id])) {
+                $parent = $componentMap[$component->parent_component_id];
+                $parent->getRelation('children')->add($component);
+            } else {
+                $rootComponents[] = $component;
+            }
+        }
+        unset($component);
+
+        $product->setRelation('components', new \think\Collection($rootComponents));
+        return $product;
+    }
+
 
     /**
      * BOM管理
@@ -180,8 +244,8 @@ class Product extends Backend
             $this->success('BOM数据保存成功');
         }
 
-        // 加载完整的BOM树
-        $productWithBom = $row->getFullBomTree();
+        // 高效加载完整的BOM树
+        $productWithBom = $this->loadFullBom($ids);
         
         $this->view->assign("row", $productWithBom);
         return $this->view->fetch('bom/product/bom');
@@ -198,22 +262,8 @@ class Product extends Backend
         }
 
         try {
-            // 1. 完整加载BOM树
-            $productWithBom = ProductModel::with([
-                'components' => function($query) {
-                    $query->with([
-                        'children' => function($subQuery) {
-                            $subQuery->with([
-                                'materialUsages.rawMaterial',
-                                'processAssignments.process'
-                            ]);
-                        },
-                        'materialUsages.rawMaterial',
-                        'materialUsages.processAssignments.process', 
-                        'processAssignments.process'
-                    ])->order('sequence asc');
-                }
-            ])->find($ids);
+            // 1. 高效加载BOM树
+            $productWithBom = $this->loadFullBom($ids);
 
             if (!$productWithBom) {
                 $this->error('产品不存在');
@@ -259,7 +309,7 @@ class Product extends Backend
             }
 
         } catch (\Exception $e) {
-            \think\Log::error('成本计算错误: ' . $e->getMessage());
+            \think\Log::error('成本计算错误: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
             if ($this->request->isAjax()) {
                 $this->error('计算失败: ' . $e->getMessage());
             } else {
@@ -283,8 +333,8 @@ class Product extends Backend
         }
 
         try {
-            // 加载完整BOM树
-            $productWithBom = $row->getFullBomTree();
+            // 高效加载完整BOM树
+            $productWithBom = $this->loadFullBom($ids);
             
             // 构建树形结构数据
             $treeData = $this->buildBomTreeData($productWithBom);

@@ -38,11 +38,7 @@ class Component extends Model
     public function children()
     {
         return $this->hasMany('Component', 'parent_component_id')
-                    ->order('sequence asc')
-                    ->with([
-                        'materialUsages.rawMaterial',
-                        'processAssignments.process'
-                    ]);
+                    ->order('sequence asc');
     }
 
     /**

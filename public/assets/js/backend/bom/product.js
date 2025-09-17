@@ -30,7 +30,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                          formatter: function(value, row, index) {
                              return '<div class="product-info">' +
                                     '<strong class="product-name">' + value + '</strong>' +
-                                    '<div class="product-status">' + Controller.api.formatStatus(row.status) + '</div>' +
+                                    '<div class="product-status">' + Controller.api.formatStatus(row.status, row) + '</div>' +
                                     '</div>';
                          }},
                         {field: 'description', title: __('Description'), operate: 'LIKE', 
@@ -118,6 +118,33 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         },
         
         api: {
+            formatStatus: function(value, row) {
+                // FastAdmin uses `normal`/`hidden` for its multi-actions.
+                // The model defined `active`/`inactive`. We'll support both for robustness.
+                var status = value ? value.toLowerCase() : '';
+                var color = 'default';
+                var text = '未知';
+                var statusList = {
+                    'normal': '启用',
+                    'active': '启用',
+                    'hidden': '禁用',
+                    'inactive': '禁用'
+                };
+                var colorMap = {
+                    'normal': 'success',
+                    'active': 'success',
+                    'hidden': 'default',
+                    'inactive': 'default'
+                };
+
+                if (statusList[status]) {
+                    text = statusList[status];
+                    color = colorMap[status];
+                }
+
+                return '<span class="label label-' + color + '">' + text + '</span>';
+            },
+
             bindevent: function () {
                 Form.api.bindevent($("form[role=form]"));
             },
