@@ -158,7 +158,7 @@ class ProcessAssignment extends Model
      */
     public function getDisplayName()
     {
-        return $this->alias ?: ($this->process ? $this->process->name : 'Unknown Process');
+        return (string) ($this->alias ?: ($this->process ? $this->process->name : 'Unknown Process'));
     }
 
     /**

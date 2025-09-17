@@ -96,7 +96,7 @@ class MaterialUsage extends Model
      */
     public function getDisplayName()
     {
-        return $this->alias ?: ($this->rawMaterial ? $this->rawMaterial->name : 'Unknown Material');
+        return (string) ($this->alias ?: ($this->rawMaterial ? $this->rawMaterial->name : 'Unknown Material'));
     }
 
     /**
