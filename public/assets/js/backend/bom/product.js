@@ -1,122 +1,6 @@
 define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
 
     var Controller = {
-        index: function () {
-            // 初始化表格参数
-            Table.api.init({
-                extend: {
-                    index_url: 'bom/product/index' + location.search,
-                    add_url: 'bom/product/add',
-                    edit_url: 'bom/product/edit',
-                    del_url: 'bom/product/del',
-                    multi_url: 'bom/product/multi',
-                    import_url: 'bom/product/import',
-                    table: 'products',
-                }
-            });
-
-            var table = $("#table");
-
-            // 初始化表格
-            table.bootstrapTable({
-                url: $.fn.bootstrapTable.defaults.extend.index_url,
-                pk: 'id',
-                sortName: 'id',
-                columns: [
-                    [
-                        {checkbox: true},
-                        {field: 'id', title: __('Id'), width: 60},
-                        {field: 'name', title: __('Name'), operate: 'LIKE', 
-                         formatter: function(value, row, index) {
-                             return '<div class="product-info">' +
-                                    '<strong class="product-name">' + value + '</strong>' +
-                                    '<div class="product-status">' + Controller.api.formatStatus(row.status, row) + '</div>' +
-                                    '</div>';
-                         }},
-                        {field: 'description', title: __('Description'), operate: 'LIKE', 
-                         formatter: function(value, row, index) {
-                             return value ? '<span class="text-muted" title="' + value + '">' + 
-                                    (value.length > 50 ? value.substring(0, 50) + '...' : value) + '</span>' : 
-                                    '<span class="text-muted">无描述</span>';
-                         }},
-                        {field: 'image', title: __('Image'), operate: false, 
-                         events: Table.api.events.image, 
-                         formatter: function(value, row, index) {
-                             return value ? 
-                                 '<a href="' + value + '" target="_blank" class="btn btn-xs btn-success"><i class="fa fa-image"></i></a>' :
-                                 '<span class="text-muted">无图片</span>';
-                         }},
-                        {field: 'length_formula', title: '长度(L)', operate: 'LIKE', width: 100,
-                         formatter: Controller.api.formatFormula},
-                        {field: 'width_formula', title: '宽度(W)', operate: 'LIKE', width: 100,
-                         formatter: Controller.api.formatFormula},
-                        {field: 'height_formula', title: '高度(H)', operate: 'LIKE', width: 100,
-                         formatter: Controller.api.formatFormula},
-                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', 
-                         addclass:'datetimerange', autocomplete:false, width: 120,
-                         formatter: Table.api.formatter.datetime},
-                        {field: 'operate', title: __('Operate'), table: table, 
-                         events: Table.api.events.operate, width: 160,
-                         buttons: [
-                             {
-                                 name: 'bom',
-                                 text: 'BOM管理',
-                                 title: 'BOM管理',
-                                 classname: 'btn btn-xs btn-success btn-dialog',
-                                 icon: 'fa fa-sitemap',
-                                 url: 'bom/product/bom',
-                                 extend: 'data-area=\'["90%","90%"]\''
-                             },
-                             {
-                                 name: 'calculate',
-                                 text: '成本计算',
-                                 title: '成本计算',
-                                 classname: 'btn btn-xs btn-info btn-dialog',
-                                 icon: 'fa fa-calculator',
-                                 url: 'bom/product/calculate',
-                                 extend: 'data-area=\'["90%","90%"]\''
-                             }
-                         ],
-                         formatter: Table.api.formatter.operate
-                        }
-                    ]
-                ]
-            });
-
-            // 为表格绑定事件
-            Table.api.bindevent(table);
-        },
-        
-        add: function () {
-            Controller.api.bindevent();
-            Controller.api.initFormulas();
-        },
-        
-        edit: function () {
-            Controller.api.bindevent();
-            Controller.api.initFormulas();
-        },
-        
-        bom: function () {
-            Controller.api.bindevent();
-            
-            // 初始化BOM树
-            Controller.api.initBomTree();
-            
-            // 绑定树节点事件
-            Controller.api.bindTreeEvents();
-            
-            // 绑定工具栏事件
-            Controller.api.bindBomToolbar();
-        },
-        
-        calculate: function () {
-            Controller.api.bindevent();
-            
-            // 初始化成本计算界面
-            Controller.api.initCostCalculation();
-        },
-        
         api: {
             formatStatus: function(value, row) {
                 // FastAdmin uses `normal`/`hidden` for its multi-actions.
@@ -474,6 +358,121 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 
                 $resultsPanel.html(resultsHtml);
             }
+        },
+        index: function () {
+            // 初始化表格参数
+            Table.api.init({
+                extend: {
+                    index_url: 'bom/product/index' + location.search,
+                    add_url: 'bom/product/add',
+                    edit_url: 'bom/product/edit',
+                    del_url: 'bom/product/del',
+                    multi_url: 'bom/product/multi',
+                    import_url: 'bom/product/import',
+                    table: 'products',
+                }
+            });
+
+            var table = $("#table");
+
+            // 初始化表格
+            table.bootstrapTable({
+                url: $.fn.bootstrapTable.defaults.extend.index_url,
+                pk: 'id',
+                sortName: 'id',
+                columns: [
+                    [
+                        {checkbox: true},
+                        {field: 'id', title: __('Id'), width: 60},
+                        {field: 'name', title: __('Name'), operate: 'LIKE',
+                         formatter: function(value, row, index) {
+                             return '<div class="product-info">' +
+                                    '<strong class="product-name">' + value + '</strong>' +
+                                    '<div class="product-status">' + Controller.api.formatStatus(row.status, row) + '</div>' +
+                                    '</div>';
+                         }},
+                        {field: 'description', title: __('Description'), operate: 'LIKE',
+                         formatter: function(value, row, index) {
+                             return value ? '<span class="text-muted" title="' + value + '">' +
+                                    (value.length > 50 ? value.substring(0, 50) + '...' : value) + '</span>' :
+                                    '<span class="text-muted">无描述</span>';
+                         }},
+                        {field: 'image', title: __('Image'), operate: false,
+                         events: Table.api.events.image,
+                         formatter: function(value, row, index) {
+                             return value ?
+                                 '<a href="' + value + '" target="_blank" class="btn btn-xs btn-success"><i class="fa fa-image"></i></a>' :
+                                 '<span class="text-muted">无图片</span>';
+                         }},
+                        {field: 'length_formula', title: '长度(L)', operate: 'LIKE', width: 100,
+                         formatter: Controller.api.formatFormula},
+                        {field: 'width_formula', title: '宽度(W)', operate: 'LIKE', width: 100,
+                         formatter: Controller.api.formatFormula},
+                        {field: 'height_formula', title: '高度(H)', operate: 'LIKE', width: 100,
+                         formatter: Controller.api.formatFormula},
+                        {field: 'createtime', title: __('Createtime'), operate:'RANGE',
+                         addclass:'datetimerange', autocomplete:false, width: 120,
+                         formatter: Table.api.formatter.datetime},
+                        {field: 'operate', title: __('Operate'), table: table,
+                         events: Table.api.events.operate, width: 160,
+                         buttons: [
+                             {
+                                 name: 'bom',
+                                 text: 'BOM管理',
+                                 title: 'BOM管理',
+                                 classname: 'btn btn-xs btn-success btn-dialog',
+                                 icon: 'fa fa-sitemap',
+                                 url: 'bom/product/bom',
+                                 extend: 'data-area=\'["90%","90%"]\''
+                             },
+                             {
+                                 name: 'calculate',
+                                 text: '成本计算',
+                                 title: '成本计算',
+                                 classname: 'btn btn-xs btn-info btn-dialog',
+                                 icon: 'fa fa-calculator',
+                                 url: 'bom/product/calculate',
+                                 extend: 'data-area=\'["90%","90%"]\''
+                             }
+                         ],
+                         formatter: Table.api.formatter.operate
+                        }
+                    ]
+                ]
+            });
+
+            // 为表格绑定事件
+            Table.api.bindevent(table);
+        },
+
+        add: function () {
+            Controller.api.bindevent();
+            Controller.api.initFormulas();
+        },
+
+        edit: function () {
+            Controller.api.bindevent();
+            Controller.api.initFormulas();
+        },
+
+        bom: function () {
+            Controller.api.bindevent();
+
+            // 初始化BOM树
+            Controller.api.initBomTree();
+
+            // 绑定树节点事件
+            Controller.api.bindTreeEvents();
+
+            // 绑定工具栏事件
+            Controller.api.bindBomToolbar();
+        },
+
+        calculate: function () {
+            Controller.api.bindevent();
+
+            // 初始化成本计算界面
+            Controller.api.initCostCalculation();
         }
     };
     
