@@ -208,7 +208,7 @@
         // 加载BOM树数据
         function loadBomTree() {
             $.ajax({
-                url: 'bom/product/getBomTree/ids/' + productId,
+                url: '{:url("bom/product/getBomTree/ids")}/' + productId,
                 type: 'GET',
                 dataType: 'json',
                 success: function(ret) {
