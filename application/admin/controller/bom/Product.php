@@ -386,7 +386,7 @@ class Product extends Backend
     {
         $node = [
             'id' => 'component_' . $component->id,
-            'text' => $component->name . ' (部件)',
+            'text' => ($component->name ?? 'Unknown Component') . ' (部件)',
             'type' => 'component',  
             'data' => [
                 'id' => $component->id,
@@ -403,13 +403,14 @@ class Product extends Backend
         // 添加材料使用
         if (isset($component->materialUsages)) {
             foreach ($component->materialUsages as $materialUsage) {
+                $materialName = $materialUsage->display_name ?? $materialUsage->name ?? 'Unknown Material';
                 $node['children'][] = [
                     'id' => 'material_' . $materialUsage->id,
-                    'text' => $materialUsage->getDisplayName() . ' (材料)',
+                    'text' => $materialName . ' (材料)',
                     'type' => 'material',
                     'data' => [
                         'id' => $materialUsage->id,
-                        'name' => $materialUsage->getDisplayName(),
+                        'name' => $materialName,
                         'type' => 'material',
                         'raw_material_id' => $materialUsage->raw_material_id,
                         'length_formula' => $materialUsage->length_formula,
@@ -423,13 +424,14 @@ class Product extends Backend
         // 添加工艺分配
         if (isset($component->processAssignments)) {
             foreach ($component->processAssignments as $processAssignment) {
+                $processName = $processAssignment->display_name ?? $processAssignment->name ?? 'Unknown Process';
                 $node['children'][] = [
                     'id' => 'process_' . $processAssignment->id,
-                    'text' => $processAssignment->getDisplayName() . ' (工艺)',
+                    'text' => $processName . ' (工艺)',
                     'type' => 'process',
                     'data' => [
                         'id' => $processAssignment->id,
-                        'name' => $processAssignment->getDisplayName(),
+                        'name' => $processName,
                         'type' => 'process',
                         'process_id' => $processAssignment->process_id,
                         'cost_override' => $processAssignment->cost_override

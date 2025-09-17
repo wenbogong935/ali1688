@@ -1,0 +1,144 @@
+{
+    "id": 1,
+    "name": "高级礼品盒",
+    "length_formula": "300",
+    "width_formula": "200",
+    "height_formula": "100",
+    "components": [
+        {
+            "id": 10,
+            "name": "外盒",
+            "quantity_per_parent": 1,
+            "length_formula": "L",
+            "width_formula": "W",
+            "height_formula": "H",
+            "materialUsages": [
+                {
+                    "id": 101,
+                    "display_name": "1200g灰板",
+                    "length_formula": "L+H*2+20",
+                    "width_formula": "W+H*2+20",
+                    "imposition_quantity": 1,
+                    "raw_material_id": 1,
+                    "rawMaterial": {
+                        "id": 1,
+                        "name": "1200g灰板",
+                        "unit_cost": 8,
+                        "unit_of_measure": "per_kg",
+                        "std_grammage_gsm": null,
+                        "density_kgm3": 700
+                    }
+                },
+                {
+                    "id": 102,
+                    "display_name": "157g铜版纸面纸",
+                    "length_formula": "L+H*2+40",
+                    "width_formula": "W+H*2+40",
+                    "imposition_quantity": 1,
+                    "raw_material_id": 2,
+                    "rawMaterial": {
+                        "id": 2,
+                        "name": "157g铜版纸",
+                        "unit_cost": 12,
+                        "unit_of_measure": "per_sqm",
+                        "std_grammage_gsm": 157,
+                        "density_kgm3": null
+                    }
+                }
+            ],
+            "processAssignments": [
+                {
+                    "id": 1001,
+                    "display_name": "覆膜",
+                    "sequence": 1,
+                    "is_transformative": false,
+                    "is_affected_by_imposition": false,
+                    "cost_override": null,
+                    "process_id": 1,
+                    "process": {
+                        "id": 1,
+                        "name": "覆膜",
+                        "cost_type": "per_area",
+                        "cost_rate": 0.5,
+                        "setup_cost": 10
+                    }
+                }
+            ],
+            "children": []
+        },
+        {
+            "id": 20,
+            "name": "内托",
+            "quantity_per_parent": 1,
+            "length_formula": "L-10",
+            "width_formula": "W-10",
+            "height_formula": "H-10",
+            "materialUsages": [
+                {
+                    "id": 201,
+                    "display_name": "EVA泡棉",
+                    "length_formula": "L",
+                    "width_formula": "W",
+                    "imposition_quantity": 2,
+                    "raw_material_id": 3,
+                    "rawMaterial": {
+                        "id": 3,
+                        "name": "EVA泡棉",
+                        "unit_cost": 50,
+                        "unit_of_measure": "per_cbm",
+                        "thickness_mm": 30,
+                        "std_grammage_gsm": null,
+                        "density_kgm3": 100
+                    }
+                }
+            ],
+            "processAssignments": [
+                {
+                    "id": 2001,
+                    "display_name": "激光切割",
+                    "sequence": 1,
+                    "is_transformative": false,
+                    "is_affected_by_imposition": false,
+                    "cost_override": null,
+                    "process_id": 2,
+                    "process": {
+                        "id": 2,
+                        "name": "激光切割",
+                        "cost_type": "fixed",
+                        "cost_rate": 5
+                    }
+                }
+            ],
+            "children": [
+                {
+                    "id": 30,
+                    "name": "内托贴纸",
+                    "quantity_per_parent": 2,
+                    "length_formula": "L/2",
+                    "width_formula": "W/2",
+                    "height_formula": "0.1",
+                    "materialUsages": [
+                        {
+                            "id": 301,
+                            "display_name": "不干胶贴纸",
+                            "length_formula": "L",
+                            "width_formula": "W",
+                            "imposition_quantity": 10,
+                            "raw_material_id": 4,
+                            "rawMaterial": {
+                                "id": 4,
+                                "name": "不干胶贴纸",
+                                "unit_cost": 0.2,
+                                "unit_of_measure": "per_piece",
+                                "std_grammage_gsm": null,
+                                "density_kgm3": null
+                            }
+                        }
+                    ],
+                    "processAssignments": [],
+                    "children": []
+                }
+            ]
+        }
+    ]
+}

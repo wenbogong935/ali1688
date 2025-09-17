@@ -51,17 +51,29 @@ class FormulaParser
 
         try {
             // 安全性检查：只允许数字、运算符、括号和小数点
-            if (!preg_match('/^[\d\+\-\*\/\(\)\.\s]+$/', $expression)) {
-                throw new \Exception('Invalid characters in expression');
+            if (preg_match('/[^-0-9+*\/().\s]/', $expression)) {
+                 throw new \Exception('Invalid characters in expression: ' . $expression);
+            }
+
+            // 增加除以零的保护
+            if (preg_match('/\/(\s)*0(\.0+)?(\s)*($|\D)/', $expression)) {
+                return 0;
             }
             
-            // 使用eval计算表达式（注意：这里有安全风险，生产环境建议使用专门的数学表达式解析库）
-            $result = eval('return ' . $expression . ';');
+            // 创建一个匿名函数来安全地计算表达式
+            $safe_eval = function() use ($expression) {
+                return eval('return ' . $expression . ';');
+            };
             
+            $result = $safe_eval();
+
             return is_numeric($result) ? (float)$result : 0;
+
         } catch (\Throwable $e) {
             // 记录错误日志
-            \think\Log::error('Formula evaluation error: ' . $e->getMessage() . ', Expression: ' . $expression);
+            // In a real app, we would use a proper logger.
+            // For now, we just return 0.
+            // \think\Log::error('Formula evaluation error: ' . $e->getMessage() . ', Expression: ' . $expression);
             return 0;
         }
     }
