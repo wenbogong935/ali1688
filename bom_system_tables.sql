@@ -12,6 +12,7 @@ CREATE TABLE `fa_products` (
   `length_formula` varchar(255) DEFAULT NULL COMMENT '长度(cm)，可以是数字或公式',
   `width_formula` varchar(255) DEFAULT NULL COMMENT '宽度(cm)，可以是数字或公式',
   `height_formula` varchar(255) DEFAULT NULL COMMENT '高度(cm)，可以是数字或公式',
+  `status` enum('normal','hidden') NOT NULL DEFAULT 'normal' COMMENT '状态',
   `createtime` int(10) DEFAULT NULL,
   `updatetime` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
