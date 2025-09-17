@@ -384,13 +384,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     [
                         {checkbox: true},
                         {field: 'id', title: __('Id'), width: 60},
-                        {field: 'name', title: __('Name'), operate: 'LIKE',
-                         formatter: function(value, row, index) {
-                             return '<div class="product-info">' +
-                                    '<strong class="product-name">' + value + '</strong>' +
-                                    '<div class="product-status">' + Controller.api.formatStatus(row.status, row) + '</div>' +
-                                    '</div>';
-                         }},
+                        {field: 'name', title: __('Name'), operate: 'LIKE'},
+                        {field: 'status', title: __('Status'), searchList: {"normal":__('Normal'),"hidden":__('Hidden')}, formatter: Controller.api.formatStatus},
                         {field: 'description', title: __('Description'), operate: 'LIKE',
                          formatter: function(value, row, index) {
                              return value ? '<span class="text-muted" title="' + value + '">' +
