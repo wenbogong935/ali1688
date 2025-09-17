@@ -75,6 +75,58 @@ class RawMaterial extends Model
         return $value ? number_format($value, 2) : null;
     }
 
+    // Accessors for frontend compatibility
+    public function getStandardLengthAttr($value, $data)
+    {
+        return $data['std_length_cm'] ?? null;
+    }
+    public function getStandardWidthAttr($value, $data)
+    {
+        return $data['std_width_cm'] ?? null;
+    }
+    public function getStandardHeightAttr($value, $data)
+    {
+        return $data['std_height_cm'] ?? null;
+    }
+    public function getGsmAttr($value, $data)
+    {
+        return $data['std_grammage_gsm'] ?? null;
+    }
+    public function getThicknessAttr($value, $data)
+    {
+        return $data['thickness_mm'] ?? null;
+    }
+    public function getDensityAttr($value, $data)
+    {
+        return $data['density_kgm3'] ?? null;
+    }
+
+    // Mutators for frontend compatibility
+    public function setStandardLengthAttr($value)
+    {
+        $this->set('std_length_cm', $value);
+    }
+    public function setStandardWidthAttr($value)
+    {
+        $this->set('std_width_cm', $value);
+    }
+    public function setStandardHeightAttr($value)
+    {
+        $this->set('std_height_cm', $value);
+    }
+    public function setGsmAttr($value)
+    {
+        $this->set('std_grammage_gsm', $value);
+    }
+    public function setThicknessAttr($value)
+    {
+        $this->set('thickness_mm', $value);
+    }
+    public function setDensityAttr($value)
+    {
+        $this->set('density_kgm3', $value);
+    }
+
     /**
      * 标准宽度格式化
      */

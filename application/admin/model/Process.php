@@ -137,4 +137,24 @@ class Process extends Model
     {
         return $this->cost_type === '固定';
     }
+
+    // Accessors for frontend compatibility
+    public function getRateAttr($value, $data)
+    {
+        return $data['cost_rate'] ?? null;
+    }
+    public function getWasteRateAttr($value, $data)
+    {
+        return $data['waste_percentage'] ?? null;
+    }
+
+    // Mutators for frontend compatibility
+    public function setRateAttr($value)
+    {
+        $this->set('cost_rate', $value);
+    }
+    public function setWasteRateAttr($value)
+    {
+        $this->set('waste_percentage', $value);
+    }
 }

@@ -131,4 +131,32 @@ class MaterialUsage extends Model
         
         return $desc;
     }
+
+    // Accessors for frontend compatibility
+    public function getPanelAttr($value, $data)
+    {
+        return $data['imposition_quantity'] ?? 1;
+    }
+    public function getGsmOverrideAttr($value, $data)
+    {
+        return $data['grammage_override'] ?? null;
+    }
+    public function getThicknessOverrideAttr($value, $data)
+    {
+        return $data['thickness_override_mm'] ?? null;
+    }
+
+    // Mutators for frontend compatibility
+    public function setPanelAttr($value)
+    {
+        $this->set('imposition_quantity', $value);
+    }
+    public function setGsmOverrideAttr($value)
+    {
+        $this->set('grammage_override', $value);
+    }
+    public function setThicknessOverrideAttr($value)
+    {
+        $this->set('thickness_override_mm', $value);
+    }
 }

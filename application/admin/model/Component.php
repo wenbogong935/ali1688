@@ -126,4 +126,16 @@ class Component extends Model
     {
         return $value ?: 1;
     }
+
+    // Accessor for frontend compatibility
+    public function getQuantityAttr($value, $data)
+    {
+        return $data['quantity_per_parent'] ?? 1;
+    }
+
+    // Mutator for frontend compatibility
+    public function setQuantityAttr($value)
+    {
+        $this->set('quantity_per_parent', $value);
+    }
 }
