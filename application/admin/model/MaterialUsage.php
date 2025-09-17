@@ -82,6 +82,16 @@ class MaterialUsage extends Model
     }
 
     /**
+     * 密度覆盖格式化
+     * NOTE: This is a temporary fix to prevent errors when the DB column is missing.
+     * The database schema should be updated to include this field.
+     */
+    public function getDensityOverrideAttr($value)
+    {
+        return $value ? number_format($value, 2) : null;
+    }
+
+    /**
      * 获取显示名称（别名或原材料名称）
      */
     public function getDisplayName()

@@ -173,6 +173,11 @@ class Product extends Backend
             ->order('sequence', 'asc')
             ->select();
 
+        // 确保$components是think\Collection类型，如果不是则转换
+        if (is_array($components)) {
+            $components = new \think\Collection($components);
+        }
+
         if ($components->isEmpty()) {
             $product->setRelation('components', new \think\Collection());
             return $product;

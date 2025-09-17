@@ -74,6 +74,7 @@ CREATE TABLE `fa_material_usages` (
   `width_formula` varchar(255) DEFAULT NULL COMMENT '使用宽度(cm)，数字或公式',
   `grammage_override` decimal(10,2) DEFAULT NULL COMMENT '克重覆盖(g/m²)',
   `thickness_override_mm` decimal(10,4) DEFAULT NULL COMMENT '厚度覆盖(mm)',
+  `density_override` decimal(10,2) DEFAULT NULL COMMENT '密度覆盖(kg/m³)',
   `imposition_quantity` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '拼版数',
   `sequence` int(10) DEFAULT '0' COMMENT '排序',
   `createtime` int(10) DEFAULT NULL,

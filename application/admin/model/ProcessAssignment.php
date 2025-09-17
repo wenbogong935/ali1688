@@ -16,6 +16,23 @@ class ProcessAssignment extends Model
     protected $createTime = 'createtime';
     protected $updateTime = 'updatetime';
 
+    // 追加的属性
+    protected $append = [
+        'assignment_type'
+    ];
+
+    /**
+     * 获取分配类型
+     * @param mixed $value
+     * @param array $data
+     * @return string
+     */
+    public function getAssignmentTypeAttr($value, $data)
+    {
+        // 根据component_id或material_usage_id判断类型
+        return !empty($data['component_id']) ? 'component' : 'material';
+    }
+
     /**
      * 关联部件
      */
