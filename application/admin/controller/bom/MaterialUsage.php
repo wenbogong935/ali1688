@@ -181,6 +181,19 @@ class MaterialUsage extends Backend
     }
 
     /**
+     * 详情
+     */
+    public function detail($ids = null)
+    {
+        $row = $this->model->get($ids);
+        if (!$row) {
+            $this->error(__('No Results were found'));
+        }
+        $this->view->assign("row", $row);
+        return $this->view->fetch();
+    }
+
+    /**
      * 根据部件ID获取材料使用列表
      */
     public function getByComponent()

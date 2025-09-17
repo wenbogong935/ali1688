@@ -46,7 +46,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             return types[value] || value;
                         }},
                         {field: 'process_order', title: '工艺顺序', operate: 'BETWEEN', sortable: true},
-                        {field: 'rate_override', title: '费率覆盖', operate: 'BETWEEN', sortable: true, formatter: function(value, row, index) {
+                        {field: 'cost_override', title: '成本覆盖', operate: 'BETWEEN', sortable: true, formatter: function(value, row, index) {
                             return value ? '￥' + parseFloat(value).toFixed(2) : '<span class="text-muted">默认</span>';
                         }},
                         {field: 'setup_cost_override', title: '设置费覆盖', operate: 'BETWEEN', sortable: true, formatter: function(value, row, index) {
@@ -130,7 +130,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             var process = data.data;
                             // 可以在这里预填充一些默认值
                             if (process.rate) {
-                                $("#c-rate_override").attr('placeholder', '默认: ￥' + process.rate);
+                                $("#c-cost_override").attr('placeholder', '默认: ￥' + process.rate);
                             }
                             if (process.setup_cost) {
                                 $("#c-setup_cost_override").attr('placeholder', '默认: ￥' + process.setup_cost);

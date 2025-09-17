@@ -1,0 +1,79 @@
+<form id="detail-form" class="form-horizontal" role="form">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">部件:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-component_id" data-rule="required" class="form-control selectpicker" name="row[component_id]" data-live-search="true" disabled>
+                <option value="">请选择部件</option>
+                {volist name="componentList" id="vo" key="k"}
+                <option value="{$k}" {eq name="k" value="$row.component_id"}selected{/eq}>{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">原材料:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-raw_material_id" data-rule="required" class="form-control selectpicker" name="row[raw_material_id]" data-live-search="true" onchange="Controller.api.loadMaterialInfo(this.value)" disabled>
+                <option value="">请选择原材料</option>
+                {volist name="rawMaterialList" id="vo" key="k"}
+                <option value="{$k}" {eq name="k" value="$row.raw_material_id"}selected{/eq}>{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">长度公式:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-length_formula" class="form-control" name="row[length_formula]" type="text" value="{$row.length_formula|htmlentities}" placeholder="如: 100 或 =L+10" readonly>
+            <span class="help-block">使用公式或固定值，可引用父级L、W、H变量</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">宽度公式:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-width_formula" class="form-control" name="row[width_formula]" type="text" value="{$row.width_formula|htmlentities}" placeholder="如: 100 或 =W+10" readonly>
+            <span class="help-block">使用公式或固定值，可引用父级L、W、H变量</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">高度公式:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-height_formula" class="form-control" name="row[height_formula]" type="text" value="{$row.height_formula|htmlentities}" placeholder="如: 2 或 =H" readonly>
+            <span class="help-block">使用公式或固定值，可引用父级L、W、H变量</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">拼版数:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-panel" class="form-control" name="row[panel]" type="number" step="1" value="{$row.panel}" placeholder="请输入拼版数" readonly>
+            <span class="help-block">用于成本分摊计算，默认为1</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">克重覆盖:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-gsm_override" class="form-control" name="row[gsm_override]" type="number" step="0.01" value="{$row.gsm_override}" placeholder="覆盖默认克重" readonly>
+            <span class="help-block">留空使用材料默认克重</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">厚度覆盖:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-thickness_override" class="form-control" name="row[thickness_override]" type="number" step="0.01" value="{$row.thickness_override}" placeholder="覆盖默认厚度" readonly>
+            <span class="help-block">留空使用材料默认厚度</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">密度覆盖:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-density_override" class="form-control" name="row[density_override]" type="number" step="0.01" value="{$row.density_override}" placeholder="覆盖默认密度" readonly>
+            <span class="help-block">留空使用材料默认密度</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">排序:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-sequence" data-rule="required;integer" class="form-control" name="row[sequence]" type="number" value="{$row.sequence}" placeholder="请输入排序值" readonly>
+        </div>
+    </div>
+</form>

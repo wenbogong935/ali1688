@@ -326,7 +326,7 @@ class Product extends Backend
     /**
      * 获取产品的BOM树结构（AJAX接口）
      */
-    public function getBomTree($ids = null)
+    public function get_bom_tree($ids = null)
     {
         if (!$this->request->isAjax()) {
             $this->error('非法请求');

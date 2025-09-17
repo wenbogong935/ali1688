@@ -15,7 +15,7 @@ class ProcessAssignment extends Validate
         'material_usage_id|材料使用ID' => 'requireIf:assignment_type,material|integer|gt:0',
         'process_id|工艺ID' => 'require|integer|gt:0',
         'process_order|工艺顺序' => 'require|integer|egt:1',
-        'rate_override|费率覆盖' => 'float|egt:0',
+        'cost_override|成本覆盖' => 'float|egt:0',
         'setup_cost_override|设置费覆盖' => 'float|egt:0',
         'panel_affects_cost|拼版影响' => 'in:0,1',
         'transform_attribute|转换属性' => 'length:0,100'
@@ -39,8 +39,8 @@ class ProcessAssignment extends Validate
         'process_order.require' => '工艺顺序不能为空',
         'process_order.integer' => '工艺顺序必须是整数',
         'process_order.egt' => '工艺顺序不能小于1',
-        'rate_override.float' => '费率覆盖必须是数字',
-        'rate_override.egt' => '费率覆盖不能小于0',
+        'cost_override.float' => '成本覆盖必须是数字',
+        'cost_override.egt' => '成本覆盖不能小于0',
         'setup_cost_override.float' => '设置费覆盖必须是数字',
         'setup_cost_override.egt' => '设置费覆盖不能小于0',
         'panel_affects_cost.in' => '拼版影响值不正确',
@@ -51,7 +51,7 @@ class ProcessAssignment extends Validate
      * 验证场景
      */
     protected $scene = [
-        'add' => ['assignment_type', 'component_id', 'material_usage_id', 'process_id', 'process_order', 'rate_override', 'setup_cost_override', 'panel_affects_cost', 'transform_attribute'],
-        'edit' => ['assignment_type', 'component_id', 'material_usage_id', 'process_id', 'process_order', 'rate_override', 'setup_cost_override', 'panel_affects_cost', 'transform_attribute']
+        'add' => ['assignment_type', 'component_id', 'material_usage_id', 'process_id', 'process_order', 'cost_override', 'setup_cost_override', 'panel_affects_cost', 'transform_attribute'],
+        'edit' => ['assignment_type', 'component_id', 'material_usage_id', 'process_id', 'process_order', 'cost_override', 'setup_cost_override', 'panel_affects_cost', 'transform_attribute']
     ];
 }
