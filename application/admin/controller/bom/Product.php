@@ -220,7 +220,7 @@ class Product extends Backend
         foreach ($componentMap as $id => &$component) {
             if ($component->parent_component_id && isset($componentMap[$component->parent_component_id])) {
                 $parent = $componentMap[$component->parent_component_id];
-                $parent->getRelation('children')->add($component);
+                $parent->getRelation('children')->push($component);
             } else {
                 $rootComponents[] = $component;
             }

@@ -18,8 +18,31 @@ class ProcessAssignment extends Model
 
     // 追加的属性
     protected $append = [
-        'assignment_type'
+        'assignment_type',
+        'process_order'
     ];
+
+    /**
+     * 获取工艺顺序（兼容前端字段）
+     * @param mixed $value
+     * @param array $data
+     * @return int
+     */
+    public function getProcessOrderAttr($value, $data)
+    {
+        return $data['sequence'];
+    }
+
+    /**
+     * 设置工艺顺序（兼容前端字段）
+     * @param mixed $value
+     * @return $this
+     */
+    public function setProcessOrderAttr($value)
+    {
+        $this->set('sequence', $value);
+        return $this;
+    }
 
     /**
      * 获取分配类型
