@@ -116,6 +116,7 @@ CREATE TABLE `fa_process_assignments` (
   `alias` varchar(255) DEFAULT NULL COMMENT '别名',
   `sequence` int(10) NOT NULL DEFAULT '0' COMMENT '工艺顺序',
   `cost_override` decimal(12,6) DEFAULT NULL COMMENT '特定成本覆盖',
+  `setup_cost_override` decimal(12,4) DEFAULT NULL COMMENT '特定设置成本覆盖',
   `is_affected_by_imposition` tinyint(1) DEFAULT '1' COMMENT '成本是否受父项拼版数影响',
   `is_transformative` tinyint(1) DEFAULT '0' COMMENT '是否转换尺寸/数量',
   `output_length_formula` varchar(255) DEFAULT NULL,
