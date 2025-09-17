@@ -4,6 +4,7 @@
 /runtime/*
 /addons/*
 /public/assets/libs/
+!/public/assets/libs/ztree/
 /public/assets/addons/*
 /public/uploads/*
 .DS_Store
